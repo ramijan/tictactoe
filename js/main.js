@@ -4,13 +4,22 @@ function Game() {
 	this.moveCount = 0;
 	this.gameOver = false;
 	this.lastMove = 'Player one\'s turn';
+	this.moveList = [];
 }
+
+function Move(token, row, column) {
+	this.token = token;
+	this.row = row;
+	this.column = column;
+}
+
 
 var tictactoeApp = angular.module('tictactoeApp', []);
 
 tictactoeApp.controller('BoardController', ['$scope', function($scope){
 	
 	$scope.game = new Game();
+	$scope.history = [];
 	console.log($scope.game);
 
 	
@@ -20,6 +29,7 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 			var token = $scope.game.playerOneTurn ? 'X' : 'O';
 			$scope.game.lastMove = token + ' played at ' + row + ", " + column;
 			$scope.game.board[row][column] = token;
+			$scope.game.moveList.push(new Move(token, row, column));
 			console.log($scope.game.board);
 			$scope.game.playerOneTurn = !$scope.game.playerOneTurn;
 			$scope.alertGameOver();
@@ -29,6 +39,9 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 
 
 	$scope.resetBoard = function() {
+		$scope.history.push(angular.copy($scope.game));
+		console.log($scope.game.moveList);
+		console.log($scope.history);
 		$scope.game = new Game();
 	};
 
@@ -36,13 +49,13 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 		var done = $scope.isGameOver();
 		//TODO: replace alerts with something more interesting
 		if(done=='X') {
-			alert("Player 1 wins!");
+			$scope.game.lastMove += "\nPlayer 1 wins!";
 		}
 		else if (done=='O') {
-			alert("Player 2 wins!");
+			$scope.game.lastMove += "\nPlayer 2 wins!";
 		}
 		else if (done=='XO') {
-			alert("It's a tie!");
+			$scope.game.lastMove += "\nIt's a cat's game (tie)!";
 		}
 	}
 
