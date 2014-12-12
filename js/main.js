@@ -1,28 +1,33 @@
+function Game() {
+	this.board = [[null,null,null],[null,null,null],[null,null,null]];
+	this.playerOneTurn = true;
+	this.moveCount = 0;
+	this.gameOver = false;
+}
 
 var tictactoeApp = angular.module('tictactoeApp', []);
 
 tictactoeApp.controller('BoardController', ['$scope', function($scope){
 	
-	$scope.boardArray = [[null,null,null],[null,null,null],[null,null,null]];
-	$scope.playerOneTurn = true;
+	$scope.game = new Game();
+	console.log($scope.game);
 
 	$scope.play = function(row, column) {
-		if(!$scope.boardArray[row][column]) {
-			$scope.boardArray[row][column] = $scope.playerOneTurn ? 'X' : 'O';
-			console.log($scope.boardArray);
-			$scope.playerOneTurn = !$scope.playerOneTurn;
+		if(!$scope.game.board[row][column]) {
+			$scope.game.board[row][column] = $scope.game.playerOneTurn ? 'X' : 'O';
+			console.log($scope.game.board);
+			$scope.game.playerOneTurn = !$scope.game.playerOneTurn;
 			$scope.alertGameOver();
 		}
 	};
 
 	$scope.resetBoard = function() {
-		$scope.boardArray = [[null,null,null],[null,null,null],[null,null,null]];
-		$scope.playerOneTurn = true;
-		console.log($scope.boardArray);
+		$scope.game = new Game();
 	};
 
 	$scope.alertGameOver = function() {
 		var done = $scope.isGameOver();
+		//TODO: replace alerts with something more interesting
 		if(done=='X') {
 			alert("Player 1 wins!");
 		}
@@ -35,7 +40,7 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 	}
 
 	$scope.isGameOver = function() {
-		var b = $scope.boardArray;
+		var b = $scope.game.board;
 
 		//check rows
 		for(var i = 0; i < b.length; i++) {
