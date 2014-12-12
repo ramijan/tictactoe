@@ -3,7 +3,6 @@ function Game() {
 	this.playerOneTurn = true;
 	this.moveCount = 0;
 	this.gameOver = false;
-	this.lastMove = '';
 	this.moveList = [];
 }
 
@@ -20,19 +19,20 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 	
 	$scope.game = new Game();
 	$scope.history = [];
+	$scope.lastMove = '';
 	console.log($scope.game);
 
 	
 	$scope.play = function(row, column) {
 		
+		//block further moves if game is over
 		if($scope.game.gameOver) {
-			
 			return;
 		}
 
 		if(!$scope.game.board[row][column]) {
 			var token = $scope.game.playerOneTurn ? 'X' : 'O';
-			$scope.game.lastMove = token + ' played at ' + row + ", " + column;
+			$scope.lastMove = token + ' played at ' + row + ", " + column;
 			$scope.game.board[row][column] = token;
 			$scope.game.moveList.push(new Move(token, row, column));
 			console.log($scope.game.board);
