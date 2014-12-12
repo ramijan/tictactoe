@@ -1,16 +1,16 @@
 <!doctype html>
 
-<html ng-app="tttApp">
+<html ng-app="tictactoeApp">
 	<head>
 		<title>Tic tac toe</title>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.6/angular.min.js"></script>
+		<script src="js/angular.min.js"></script>
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 	<body>
 		<table id="board" ng-controller="BoardController">
 			<tr ng-repeat="row in [0,1,2]">
-				<td ng-repeat="column in [0,1,2]"><button ng-click="play(row, column)">{{row}},{{column}}</button></td>
+				<td ng-repeat="column in [0,1,2]"><button ng-click="play(row, column)">{{boardModel[row][column]}}</button></td>
 			</tr>
 		</table>
 	</body>

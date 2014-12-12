@@ -1,11 +1,16 @@
-var board = [null, null, null, null, null, null, null, null, null];
 
-var tttApp = angular.module('tttApp', []);
+var tictactoeApp = angular.module('tictactoeApp', []);
 
-tttApp.controller('BoardController', ['$scope', function($scope){
+tictactoeApp.controller('BoardController', ['$scope', function($scope){
+	
+	$scope.boardModel = [[null,null,null],[null,null,null],[null,null,null]];
+	$scope.playerOneTurn = true;
+
 	$scope.play = function(row, column) {
-	//	if(isValidMove(row,column)) {
-			console.log("played at " + row + " " + column);
-	//	}
+		if(!$scope.boardModel[row][column]) {
+			$scope.boardModel[row][column] = $scope.playerOneTurn ? 'X' : 'O';
+			console.log($scope.boardModel);
+			$scope.playerOneTurn = !$scope.playerOneTurn;
+		}
 	};
 }]);
