@@ -19,5 +19,8 @@ td:focus {
 	margin: auto;
 	background-color: gray;
 	border-radius: 5px;
-	margin-top: 100px;
+	margin-top: 30px;
+}
+body {
+	text-align: center;
 }

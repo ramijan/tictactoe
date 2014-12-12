@@ -13,4 +13,13 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 			$scope.playerOneTurn = !$scope.playerOneTurn;
 		}
 	};
+
+	$scope.resetBoard = function() {
+		$scope.boardModel = [[null,null,null],[null,null,null],[null,null,null]];
+		$scope.playerOneTurn = true;
+		console.log($scope.boardModel);
+	};
+
+
+
 }]);

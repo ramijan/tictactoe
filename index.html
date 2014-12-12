@@ -7,8 +7,9 @@
 		<script src="js/main.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 	</head>
-	<body>
-		<table id="board" ng-controller="BoardController">
+	<body ng-controller="BoardController">
+		<button ng-click="resetBoard()">Reset Board</button>
+		<table id="board">
 			<tr ng-repeat="row in [0,1,2]">
 				<td ng-repeat="column in [0,1,2]"><button ng-click="play(row, column)">{{boardModel[row][column]}}</button></td>
 			</tr>
