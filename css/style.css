@@ -4,17 +4,18 @@ td button {
 	height: 125px;
 	width: 125px;
 	text-align: center;
-	background-color: green;
+	background-color: peachpuff;
 	opacity: .5;
 }
-td:hover {
+button.red:hover {
 	background-color: red;
 	opacity: .5;
 }
-td:focus {
+button.green:hover {
 	background-color: green;
-	opacity: 1;
+	opacity: .5;
 }
+
 #board {
 	margin: auto;
 	background-color: gray;

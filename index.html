@@ -15,7 +15,7 @@
 		
 		<table id="board">
 			<tr ng-repeat="row in [0,1,2]">
-				<td ng-repeat="column in [0,1,2]"><button ng-click="play(row, column)">{{game.board[row][column]}}</button></td>
+				<td ng-repeat="column in [0,1,2]"><button ng-class="{green: !game.board[row][column], red: game.board[row][column]}" ng-click="play(row, column)">{{game.board[row][column]}}</button></td>
 				<!--TODO: figure out way to highlight the winning row/column-->
 			</tr>
 		</table>
