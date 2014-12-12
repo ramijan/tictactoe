@@ -3,6 +3,7 @@ function Game() {
 	this.playerOneTurn = true;
 	this.moveCount = 0;
 	this.gameOver = false;
+	this.lastMove = 'Player one\'s turn';
 }
 
 var tictactoeApp = angular.module('tictactoeApp', []);
@@ -12,14 +13,20 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 	$scope.game = new Game();
 	console.log($scope.game);
 
+	
 	$scope.play = function(row, column) {
+		
 		if(!$scope.game.board[row][column]) {
-			$scope.game.board[row][column] = $scope.game.playerOneTurn ? 'X' : 'O';
+			var token = $scope.game.playerOneTurn ? 'X' : 'O';
+			$scope.game.lastMove = token + ' played at ' + row + ", " + column;
+			$scope.game.board[row][column] = token;
 			console.log($scope.game.board);
 			$scope.game.playerOneTurn = !$scope.game.playerOneTurn;
 			$scope.alertGameOver();
 		}
 	};
+
+
 
 	$scope.resetBoard = function() {
 		$scope.game = new Game();
@@ -53,7 +60,7 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 		//check diagonals
 		if(b[0][0] && b[0][0] == b[1][1] && b[1][1] == b[2][2]) return b[0][0];
 		if(b[0][2] && b[0][2] == b[1][1] && b[1][1] == b[2][0]) return b[0][2];
-		//check tie
+		//check tie (and game not complete)
 		for(var i = 0; i < b.length; i++) {
 			for(var j = 0; j < b[i].length; j++) {
 				if(b[i][j] == null) return;
