@@ -1,0 +1,22 @@
+td button {
+	border: 1px solid black;
+	height: 100px;
+	width: 100px;
+	text-align: center;
+	background-color: green;
+	opacity: .5;
+}
+td:hover {
+	background-color: red;
+	opacity: .5;
+}
+td:focus {
+	background-color: green;
+	opacity: 1;
+}
+#board {
+	margin: auto;
+	background-color: gray;
+	border-radius: 5px;
+	margin-top: 100px;
+}
