@@ -18,8 +18,9 @@ var tictactoeApp = angular.module('tictactoeApp', []);
 tictactoeApp.controller('BoardController', ['$scope', function($scope){
 	
 	$scope.game = new Game();
-	$scope.history = [];
+	$scope.gameHistory = [];
 	$scope.lastMove = '';
+	$scope.chats = [];
 	console.log($scope.game);
 
 	
@@ -48,12 +49,17 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 		}
 	};
 
+	$scope.sendChat = function() {
+		$scope.chats.push($scope.chat);
+		$scope.chat = '';
+	};
+
 
 
 	$scope.resetBoard = function() {
-		$scope.history.push(angular.copy($scope.game));
+		$scope.gameHistory.push(angular.copy($scope.game));
 		console.log($scope.game.moveList);
-		console.log($scope.history);
+		console.log($scope.gameHistory);
 		$scope.game = new Game();
 	};
 

@@ -60,17 +60,18 @@ button.p2 {
 }
 
 .chat-container {
-
 	width: 100%;
-	border-radius: 10px;
 }
 .chat-history {
 	display: block;
-	margin: auto;
+	margin: 10px auto;
 	width: 85%;
 	height: 500px;
 	background-color: white;
 	margin-bottom: 20px;
+	border-radius: 5px;
+	list-style: none;
+	text-align: left;
 }
 .chat-entry {
 	float: left;

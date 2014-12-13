@@ -35,10 +35,17 @@
 		</div>
 
 		<div class="right-column">
-					<div class="chat-container">
-				<div class="chat-history"></div>
-				<input class="chat-entry" type="text" ng-model="chat">
-				<button ng-click="sendChat()">Send</button>
+			<div class="chat-container">
+				<h3>Chat</h3>
+				<div class="chat-history">
+					<ul class="chat-history">
+						<li ng-repeat="chat in chats">{{chat}}</li>
+					</ul>
+				</div>
+				<form ng-submit="sendChat()">
+				<input class="chat-entry" type="text" ng-model="chat" placeholder="Chat with your opponent...">
+				<button>Send</button>
+				</form>
 
 			</div>
 		<!--player2board for use until firebase integration -->
