@@ -11,19 +11,44 @@
 
 	<body ng-controller="BoardController">
 		
-		<button ng-click="resetBoard()">Reset Board</button>
-		
-		<h2>{{turnNotif()}}</h2>
-		<table id="board">
-			<tr ng-repeat="row in [0,1,2]">
-				<td ng-repeat="column in [0,1,2]"><button ng-class="{green: !game.board[row][column], red: game.board[row][column]}" ng-click="play(row, column)">{{game.board[row][column]}}</button></td>
-				<!--TODO: figure out way to highlight the winning row/column-->
-			</tr>
-		</table>
-		<br>
-		<div class="results">
-			{{lastMove}}
+
+		<div class="left-column">
 		</div>
+
+		<div class="center-column">
+			<button ng-click="resetBoard()">Reset Board</button>
+			
+			<h2>{{turnNotif()}}</h2>
+			<table ng-class="{'game-over': game.gameOver}"id="board">
+				<tr ng-repeat="row in [0,1,2]">
+					<td ng-repeat="column in [0,1,2]"><button ng-class="{green: !game.board[row][column], red: game.board[row][column]}" ng-click="play(1, row, column)">{{game.board[row][column]}}</button></td>
+					<!--TODO: figure out way to highlight the winning row/column-->
+				</tr>
+			</table>
+
+
+
+			<br>
+			<div class="results">
+				{{lastMove}}
+			</div>
+		</div>
+
+		<div class="right-column">
+					<div class="chat-container">
+				<div class="chat-history"></div>
+				<input class="chat-entry" type="text" ng-model="chat">
+				<button ng-click="sendChat()">Send</button>
+
+			</div>
+		<!--player2board for use until firebase integration -->
+			<table id="player-2-board">
+				<tr ng-repeat="row in [0,1,2]">
+					<td ng-repeat="column in [0,1,2]"><button class="p2" ng-class="{green: !game.board[row][column], red: game.board[row][column]}" ng-click="play(2, row, column)">{{game.board[row][column]}}</button></td>
+				</tr>
+			</table>
+		</div>
+
 
 	</body>
 </html>

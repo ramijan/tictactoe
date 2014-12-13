@@ -23,8 +23,15 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 	console.log($scope.game);
 
 	
-	$scope.play = function(row, column) {
+	$scope.play = function(player, row, column) {
 		
+		//block move if it's not your turn
+		if(player == 1 && !$scope.game.playerOneTurn) {
+			return;
+		}
+		else if(player == 2 && $scope.game.playerOneTurn) {
+			return;
+		}
 		//block further moves if game is over
 		if($scope.game.gameOver) {
 			return;

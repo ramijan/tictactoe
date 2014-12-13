@@ -1,8 +1,29 @@
+
+.left-column {
+	float: left;
+	width: 30%;
+	height: 1000px;
+	background-color: red;
+}
+.center-column {
+	float: left;
+	width: 40%;
+}
+.right-column {
+	float: right;
+	width: 30%;
+	height: 1000px;
+	background-color: red;
+}
+
+
+/* TODO: Figure out how to keep board square but 
+be responsive*/
 td button {
 	border: 1px solid black;
 	font-size: 36px;
-	height: 125px;
-	width: 125px;
+	height: 150px;
+	width: 150px;
 	text-align: center;
 	background-color: peachpuff;
 	opacity: .5;
@@ -25,4 +46,34 @@ button.green:hover {
 body {
 	text-align: center;
 	background-color: lightblue;
+	width: 100%;
+}
+
+#player-2-board {
+	margin: 10px auto;
+
+}
+
+button.p2 {
+	height: 75px;
+	width: 75px;
+}
+
+.chat-container {
+
+	width: 100%;
+	border-radius: 10px;
+}
+.chat-history {
+	display: block;
+	margin: auto;
+	width: 85%;
+	height: 500px;
+	background-color: white;
+	margin-bottom: 20px;
+}
+.chat-entry {
+	float: left;
+	width: 66%;
+	margin-left: 20px;
 }
