@@ -37,6 +37,11 @@ button.green:hover {
 	opacity: .5;
 }
 
+.reset-btn {
+	clear: both;
+	margin-top: 10px;
+}
+
 #board {
 	margin: auto;
 	background-color: gray;
@@ -60,21 +65,46 @@ button.p2 {
 }
 
 .chat-container {
-	width: 100%;
-}
-.chat-history {
-	display: block;
-	margin: 10px auto;
+	display: inline-block;
 	width: 85%;
-	height: 500px;
-	background-color: white;
-	margin-bottom: 20px;
+	margin: 0 auto;
+	border: 1px dashed black;
+	background-color: yellow;
 	border-radius: 5px;
+	padding: 5px;
+}
+
+div.chat-history {
+	border: 2px solid black;
+	height: 500px;
+	width: 99%;
+	background-color: white;
+	border-radius: 5px;
+}
+ul.chat-history {
+	margin-left: 10px;
+	max-width: 100%;
 	list-style: none;
 	text-align: left;
+	padding: 0;
 }
 .chat-entry {
 	float: left;
-	width: 66%;
-	margin-left: 20px;
+	width: 68%;
+	height: 25px;
+	padding 0;
+	border-color: gray;
+	outline: none;
+}
+chat {
+	padding-bottom: 10px;
+}
+.chat-button {
+	float: right;
+	width: 28%;
+	height: 25px;
+	padding: 1px;
+	border: 2px solid gray;
+	box-sizing: content-box;
+	outline: none;
 }

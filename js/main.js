@@ -1,3 +1,4 @@
+// This constructor instantiates a new game
 function Game() {
 	this.board = [[null,null,null],[null,null,null],[null,null,null]];
 	this.playerOneTurn = true;
@@ -6,31 +7,60 @@ function Game() {
 	this.moveList = [];
 }
 
+// This constructor instantiates a new move object (used) to
+// store a game's history in its moveList property
 function Move(token, row, column) {
 	this.token = token;
 	this.row = row;
 	this.column = column;
 }
 
+function Player(username) {
+	this.username = username;
+	this.searching = false;
+	this.chat = '';
+}
 
+// Create angular module
 var tictactoeApp = angular.module('tictactoeApp', []);
 
-tictactoeApp.controller('BoardController', ['$scope', function($scope){
+// Create Board controller
+tictactoeApp.controller('AppController', ['$scope', function($scope){
 	
+	// Create initial game
 	$scope.game = new Game();
+	// Array to store past games
 	$scope.gameHistory = [];
+	// Last move string, used to display during gameplay
 	$scope.lastMove = '';
+	// Array to store chats
 	$scope.chats = [];
+	$scope.players = [
+		{ username: 'ramijan',
+			searching: false,
+			chat: '' },
+		{ username: 'hadi',
+			searching: false,
+			chat: ''}
+	];
+	$scope.player1 = $scope.players[0];
+	$scope.player2 = $scope.players[1];
+
 	console.log($scope.game);
 
 	
+	// play() is triggered after each player makes their move.
+	// It makes sure the move is valid and then takes care of
+	// displaying the player token on the gameboard and storing the
+	// move in the moveHistory array.  It also switches the turn to opponent
+	// and finally checks if the move caused Game Over state
 	$scope.play = function(player, row, column) {
 		
 		//block move if it's not your turn
-		if(player == 1 && !$scope.game.playerOneTurn) {
+		if(player == $scope.player1 && !$scope.game.playerOneTurn) {
 			return;
 		}
-		else if(player == 2 && $scope.game.playerOneTurn) {
+		else if(player == $scope.player2 && $scope.game.playerOneTurn) {
 			return;
 		}
 		//block further moves if game is over
@@ -49,13 +79,18 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 		}
 	};
 
-	$scope.sendChat = function() {
-		$scope.chats.push($scope.chat);
-		$scope.chat = '';
+
+	// sendChat() posts submitted chat messages to the chats array,
+	// which is bound to the chat display area
+	$scope.sendChat = function(player) {
+			if ($scope.chats.length >= 10) $scope.chats.shift();
+			$scope.chats.push(player.username + ": " + player.chat);
+			player.chat = '';
 	};
 
 
-
+	// resetBoard() makes a copy of the current game and pushes it onto
+	// the gameHistory array and then resets the game
 	$scope.resetBoard = function() {
 		$scope.gameHistory.push(angular.copy($scope.game));
 		console.log($scope.game.moveList);
@@ -63,6 +98,9 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 		$scope.game = new Game();
 	};
 
+
+	// turnNotif() returns a string telling which player's turn it is,
+	// or Game Over (used for display on the page)
 	$scope.turnNotif = function() {
 		if($scope.game.gameOver) {
 			return "Game Over";
@@ -75,20 +113,10 @@ tictactoeApp.controller('BoardController', ['$scope', function($scope){
 		}
 	}
 
-	// $scope.alertGameOver = function() {
-	// 	var done = $scope.isGameOver();
-	// 	//TODO: replace alerts with something more interesting
-	// 	if(done=='X') {
-	// 		$scope.game.lastMove += "\nPlayer 1 wins!";
-	// 	}
-	// 	else if (done=='O') {
-	// 		$scope.game.lastMove += "\nPlayer 2 wins!";
-	// 	}
-	// 	else if (done=='XO') {
-	// 		$scope.game.lastMove += "\nIt's a cat's game (tie)!";
-	// 	}
-	// }
 
+	// isGameOver() checks the gameboard for all Game Over states
+	// If it finds game over it turns the game's gameOver property to true
+	// and returns the token of the winning player
 	$scope.isGameOver = function() {
 		var b = $scope.game.board;
 

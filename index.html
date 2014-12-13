@@ -6,17 +6,42 @@
 		<title>Tic tac toe</title>
 		<script src="js/angular.min.js"></script>
 		<script src="js/main.js"></script>
+		<link rel="stylesheet" href="css/normalize.css">
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 
-	<body ng-controller="BoardController">
+	<body ng-controller="AppController">
 		
 
 		<div class="left-column">
+			<!--player2board for use until firebase integration -->
+			<table id="player-2-board">
+				<tr ng-repeat="row in [0,1,2]">
+					<td ng-repeat="column in [0,1,2]"><button class="p2" ng-class="{green: !game.board[row][column], red: game.board[row][column]}" ng-click="play(2, row, column)">{{game.board[row][column]}}</button></td>
+				</tr>
+			</table>
+
+						<div class="chat-container">
+			<h3>Chat</h3>
+			<div style="height:200px" class="chat-history">
+				<ul class="chat-history">
+					<li class="chat" ng-repeat="chat in chats">{{chat}}<hr></li>
+					<li ng-show="chat">{{chat}}</li>
+
+				</ul>
+			</div>
+			<form ng-submit="sendChat(2)">
+			<input class="chat-entry" type="text" ng-model="chat2" placeholder="Chat with your opponent...">
+			<button class="chat-button">Send</button>
+			</form>
+			</div>
+
+
+
 		</div>
 
 		<div class="center-column">
-			<button ng-click="resetBoard()">Reset Board</button>
+			<button class="reset-btn" ng-click="resetBoard()">Reset Board</button>
 			
 			<h2>{{turnNotif()}}</h2>
 			<table ng-class="{'game-over': game.gameOver}"id="board">
@@ -25,9 +50,6 @@
 					<!--TODO: figure out way to highlight the winning row/column-->
 				</tr>
 			</table>
-
-
-
 			<br>
 			<div class="results">
 				{{lastMove}}
@@ -39,21 +61,16 @@
 				<h3>Chat</h3>
 				<div class="chat-history">
 					<ul class="chat-history">
-						<li ng-repeat="chat in chats">{{chat}}</li>
+						<li class="chat" ng-repeat="chat in chats">You: {{chat}}</li>
 					</ul>
 				</div>
-				<form ng-submit="sendChat()">
-				<input class="chat-entry" type="text" ng-model="chat" placeholder="Chat with your opponent...">
-				<button>Send</button>
+				<form ng-submit="sendChat(1)">
+				<input class="chat-entry" type="text" ng-model="chat1" placeholder="Chat with your opponent...">
+				<button class="chat-button">Send</button>
 				</form>
 
 			</div>
-		<!--player2board for use until firebase integration -->
-			<table id="player-2-board">
-				<tr ng-repeat="row in [0,1,2]">
-					<td ng-repeat="column in [0,1,2]"><button class="p2" ng-class="{green: !game.board[row][column], red: game.board[row][column]}" ng-click="play(2, row, column)">{{game.board[row][column]}}</button></td>
-				</tr>
-			</table>
+
 		</div>
 
 

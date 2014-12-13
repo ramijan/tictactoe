@@ -1,0 +1,44 @@
+<!doctype html>
+
+<html ng-app="tictactoeApp">
+	
+	<head>
+		<title>Tic tac toe</title>
+		<script src="js/angular.min.js"></script>
+		<script src="js/main.js"></script>
+		<link rel="stylesheet" href="css/normalize.css">
+		<link rel="stylesheet" href="css/style-alt.css">
+	</head>
+
+	<body ng-controller="AppController">
+		
+		<div class="column" ng-repeat="player in players">
+			
+			<h1> {{game.gameOver ? "Game Over" : player.username}} </h1>
+			
+			<table class="board">
+				<tr ng-repeat="row in [0,1,2]">
+					<td ng-repeat="column in [0,1,2]">
+						<button ng-click="play(player, row, column)">{{game.board[row][column]}}</button>
+					</td>
+				</tr>
+			</table>
+
+			<div class="chat-container">
+				<div class="chat-history">
+					<ul>
+						<li ng-repeat="chat in chats">{{chat}}</li>
+					</ul>
+				</div>
+				<form ng-submit="sendChat(player)">
+					<input class="chat-entry" type="text" ng-model="player.chat" placeholder="Chat with your opponent...">
+					<button class="chat-button">Send</button>
+				</form>
+			</div>
+
+		</div>
+
+
+
+	</body>
+</html>
