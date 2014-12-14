@@ -1,3 +1,8 @@
+// var Firebase = require("firebase");
+var myFirebaseRef = new Firebase("https://rami-tictactoe.firebaseio.com/users");
+
+myFirebaseRef.set([['o', 'o', 'o'], ['o', 'o', 'o'], ['o', 'o', 'o']]);
+
 // This constructor instantiates a new game
 function Game() {
 	this.board = [[null,null,null],[null,null,null],[null,null,null]];
@@ -155,3 +160,5 @@ tictactoeApp.controller('AppController', ['$scope', function($scope){
 	};
 
 }]);
+
+
