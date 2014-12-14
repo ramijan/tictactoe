@@ -111,7 +111,7 @@ tictactoeApp.controller('AppController', ['$scope', function($scope){
 		else {
 			return "Player 2 turn";
 		}
-	}
+	};
 
 
 	// isGameOver() checks the gameboard for all Game Over states
@@ -124,7 +124,7 @@ tictactoeApp.controller('AppController', ['$scope', function($scope){
 		for(var i = 0; i < b.length; i++) {
 			if(b[i][0] && b[i][0] == b[i][1] && b[i][1] == b[i][2]) {
 				$scope.game.gameOver = true;
-				console.log($scope.game.gameOver)
+				console.log($scope.game.gameOver);
 				return b[i][0];
 			}
 		}
@@ -145,13 +145,13 @@ tictactoeApp.controller('AppController', ['$scope', function($scope){
 			return b[0][2];
 		}
 		//check tie (and game not complete)
-		for(var i = 0; i < b.length; i++) {
-			for(var j = 0; j < b[i].length; j++) {
-				if(b[i][j] == null) return;
+		for(i = 0; i < b.length; i++) {
+			for(j = 0; j < b[i].length; j++) {
+				if(b[i][j] === null) return;
 			}
 		}
 		$scope.game.gameOver = true;
 		return 'XO';
-	}
+	};
 
 }]);
