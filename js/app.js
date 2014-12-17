@@ -6,61 +6,62 @@ var app = angular.module('tictactoeApp', ['firebase']);
 *		MenuController handles the menu page
 *
 */
-
 app.controller('MenuController', ['$scope', '$firebase', function($scope, $firebase) {
 
-/******************************************************************************
-*
-*												GET/ASSIGN USERID
-*
-******************************************************************************/
+	$scope.user = '';
+	$scope.matchID = '';
 
-	if(!localStorage.user) localStorage.user = 'Guest ' + Math.floor(Math.random() * 9999);
-	console.log("User is: " + localStorage.user);
-	$scope.user = localStorage.user;
+// USERNAME STUFF
+	$scope.isReturnUser = localStorage.user ? true : false;
+	if($scope.isReturnUser) $scope.user = localStorage.user;
+
+	$scope.newNameSelected = false;
+
+
+	$scope.randomName = function() {
+		var an = animals.toLowerCase().split(' ');
+		var adj = adjectives.split(' ');
+		var adjective = adj[Math.floor(Math.random()*adj.length)];
+		var animal = an[Math.floor(Math.random()*an.length)];
+		var number = Math.floor(Math.random()*100);
+		return [adjective, animal, number].join('-');
+	};
 
 	$scope.setUsername = function() {
 		localStorage.user = $scope.chosenName;
 		$scope.user = localStorage.user;
+		$scope.newNameSelected = true;
 		console.log("User changed to: " + localStorage.user);
 	};
-	
+//////////
 
-/******************************************************************************
-*
-*												GET/ASSIGN MATCHID & Board Size
-*
-******************************************************************************/
+//MATCHID STUFF
+  $scope.matches = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/matches/")).$asArray();
+  
+  $scope.openMatches = function(match) {
+  	if(match.needPlayerTwo && match.playerOne != $scope.user) {
+			return true;
+		}
+		return false;
+  };
 
-	$scope.getMatchId = function() {
 
-		var matches = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/matches/")).$asObject();
-		
-		delete localStorage.matchID;
-
-		matches.$loaded().then(function() {
-		
-			for(var key in matches) {
-				console.log(console.log(key + " " + matches[key]));
-				if(matches[key] && matches[key].needPlayerTwo) {
-					localStorage.matchID = key;
-					console.log('found match: ' + key + " " + typeof key);
-					break;
-				}
-			}
-
-			if(!localStorage.matchID) {
-				localStorage.matchID = Math.floor(Math.random() * 9999);
-				console.log('assigning random match id ' + localStorage.matchID);
-			}
-
-			//get board size and store
-			localStorage.boardSize = $scope.boardSize || 3;
-
-			location.href = 'game.html';
-
-		});
+	$scope.setMatchIdAndBoard = function(id, boardSize) {
+		if(id=='new') {
+			localStorage.matchID = Math.floor(Math.random()*99999);
+		}
+		else {
+			localStorage.matchID = id;
+		}
+		localStorage.boardSize = boardSize;
+		joinGame();
 	};
+
+	function joinGame() {
+		if(!localStorage.user) localStorage.user = $scope.randomName();
+		location.href = 'game.html';
+
+	}
 
 // End of MenuController
 }]);
@@ -121,7 +122,7 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 	}
 
 	function createBoard(size) {
-		var board = {}
+		var board = {};
 		for(var i = 0; i < size; i++) {
 			board[i] = {};
 			for(var j = 0; j < size; j++) {
@@ -211,8 +212,23 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		return 'XO';
 	};
 
+	$scope.exit = function() {
 
+		// if($scope.game.playerOne == $scope.user){
+		// 	$scope.game.playerOne = '';
+		// }
+		// else if ($scope.game.playerTwo == $scope.user){
+		// 	$scope.game.playerTwo = '';
+		// }
+
+		// if(!$scope.game.playerOne && !$scope.game.playerTwo) {
+		// 	console.log('game should delete');
+		// 	matchObj.$remove();
+		// }
+		matchObj.$remove();
+	};
 
 
 
 }]);
+

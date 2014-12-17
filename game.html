@@ -10,6 +10,8 @@
     <style>
       body {
         text-align: center;
+        background-repeat: no-repeat;
+        background-size: cover;
       }
       table {
         margin: auto;
@@ -52,6 +54,7 @@
     <h2 ng-show="game.needPlayerTwo">Waiting for opponent...</h2>
     <div ng-show="game.gameOver">Game Over.  {{game.playerOneTurn ? game.playerTwo : game.playerOne }} wins!</div>
     <button ng-show="game.playerOne == user" ng-click="resetBoard()">Reset</button>
+    <button ng-click="exit()">Exit</button>
 
   </body>
 </html>
