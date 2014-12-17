@@ -36,23 +36,31 @@
 
     </style>
   </head>
+  
   <body ng-controller="MainController">
 
-    {{ game }}
+    {{ game }}<!--for debugging -->
     <br>
     <hr>
     <p>{{game.playerOne == user ? "Player 1" : "Player 2"}}</p>
     <br>
+    
+
+    <!-- Game board -->
     <table ng-hide="game.needPlayerTwo">
       <tr ng-repeat="row in getBoardSizeArray(game.boardSize)">
         <td ng-repeat="column in getBoardSizeArray(game.boardSize)">
           <button class="board-button" ng-click="play(row, column)" ng-disabled="game.board[row][button]">{{game.board[row][column]}}</button>
         </td>
       </tr>
-
     </table>
+
+    <!-- Message displayed instead of board while waiting for opponent -->
     <h2 ng-show="game.needPlayerTwo">Waiting for opponent...</h2>
+
+    <!-- Game over message displayed beneath board when game ends -->
     <div ng-show="game.gameOver">Game Over.  {{game.playerOneTurn ? game.playerTwo : game.playerOne }} wins!</div>
+
     <button ng-show="game.playerOne == user" ng-click="resetBoard()">Reset</button>
     <button ng-click="exit()">Exit</button>
 

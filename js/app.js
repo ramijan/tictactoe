@@ -33,11 +33,13 @@ app.controller('MenuController', ['$scope', '$firebase', function($scope, $fireb
 		$scope.newNameSelected = true;
 		console.log("User changed to: " + localStorage.user);
 	};
-//////////
 
 //MATCHID STUFF
+  
+	/* Get all matches from firebase*/
   $scope.matches = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/matches/")).$asArray();
   
+  /* and then filter them to bring up only the 'open' games*/
   $scope.openMatches = function(match) {
   	if(match.needPlayerTwo && match.playerOne != $scope.user) {
 			return true;
@@ -76,6 +78,12 @@ app.controller('MenuController', ['$scope', '$firebase', function($scope, $fireb
 
 app.controller('MainController', ['$scope', '$firebase', function($scope, $firebase) {
 
+	/* Make sure all the localStorage info is present and send user back to menu if not */
+	if(!localStorage.matchID || !localStorage.matchID || !localStorage.user) {
+		alert('something went wrong. going back to menu');
+		location.href="index.html";
+	}
+
 	$scope.user = localStorage.user;
 	$scope.matchID = localStorage.matchID;
 	$scope.boardSize = localStorage.boardSize;
@@ -88,7 +96,7 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 	matchObj.$bindTo($scope, 'game');
 
 	matchObj.$loaded().then(function() {
-		console.log(Object.keys(matchObj));
+		angular.forEach(matchObj, function(v, k){console.log(k, v);});
 		console.log('needPlayerTwo present: ' + ('needPlayerTwo' in matchObj));
 
 		if('needPlayerTwo' in matchObj && 'playerOne' in matchObj && $scope.game.playerOne != $scope.user) {
@@ -122,9 +130,9 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 	}
 
 	function createBoard(size) {
-		var board = {};
+		var board = [];
 		for(var i = 0; i < size; i++) {
-			board[i] = {};
+			board[i] = [];
 			for(var j = 0; j < size; j++) {
 				board[i][j] = '';
 			}
@@ -135,7 +143,7 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 	$scope.getBoardSizeArray = function() {
 
 			var arr = [];
-			for(var i = 0; i < $scope.game.boardSize; i++) {
+			for(var i = 0; i < $scope.boardSize; i++) {
 				arr.push(i);
 			}
 			return arr;
@@ -176,35 +184,65 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 
 	$scope.isGameOver = function() {
 		var b = $scope.game.board;
+		var bs = $scope.game.boardSize;
+		
 
+		var row, col;
+
+		console.log("checking rows");
 		//check rows
-		for(var i = 0; i < b.length; i++) {
-			if(b[i][0] && b[i][1] && b[i][2] && b[i][0] == b[i][1] && b[i][1] == b[i][2]) {
-				$scope.game.gameOver = true;
-				console.log($scope.game.gameOver);
-				return b[i][0];
+		for(row = 0; row < bs; row++) {
+			for(col = 1; col < bs; col++) {
+				if(b[row][col] === '' || b[row][col] !== b[row][col-1]) {
+					break;
+				}
+				if(col == bs-1) {
+					$scope.game.gameOver = true;
+					return b[row][col];
+				}
+
 			}
 		}
+
+		console.log("checking columns");
 		//check columns
-		for(var j = 0; j < b[0].length; j++) {
-			if(b[0][j] && b[1][j] && b[2][j] && b[0][j] == b[1][j] && b[1][j] == b[2][j]) {
-				$scope.game.gameOver = true;
-				return b[0][j];
+		for(col = 0; col < bs; col++) {
+			for( row = 1; row < bs; row++) {
+				if(b[row][col] === '' || b[row][col] !== b[row-1][col]) {
+					break;
+				}
+				if (row == bs-1) {
+					$scope.game.gameOver = true;
+					return b[row][col];
+				}
 			}
 		}
+		console.log("checking diag1");
 		//check diagonals
-		if(b[0][0] && b[1][1] && b[2][2] && b[0][0] == b[1][1] && b[1][1] == b[2][2]) {
-			$scope.game.gameOver = true;
-			return b[0][0];
+		for(var i = 1; i < bs; i++) {
+			if(b[0][0] === '' || b[i][i] !== b[0][0]) {
+				break;
+			}
+			if(i == (bs-1)) {
+				$scope.game.gameOver = true;
+				return b[0][0];
+			}
 		}
-		if(b[0][2] && b[1][1] && b[2][0] && b[0][2] == b[1][1] && b[1][1] == b[2][0]) {
-			$scope.game.gameOver = true;
-			return b[0][2];
+		console.log("checking diag2");
+		for(i = 0; i < bs; i++) {
+			if(b[0][bs-1] === '' || b[i][bs-1-i] !== b[0][bs-1]) {
+				break;
+			}
+			if(i == (bs-1)) {
+				$scope.game.gameOver = true;
+				return b[0][bs-1];
+			}
 		}
-		console.log(b.length);
+
+		console.log("checking for tie");
 		//check tie (and game not complete)
-		for(i = 0; i < b.length; i++) {
-			for(j = 0; j < b[i].length; j++) {
+		for(i = 0; i < bs; i++) {
+			for(j = 0; j < bs; j++) {
 				if(b[i][j] === '') return;
 			}
 		}
