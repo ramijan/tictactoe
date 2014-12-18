@@ -88,7 +88,6 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 	$scope.matchID = localStorage.matchID;
 	$scope.boardSize = localStorage.boardSize;
 
-
 	console.log('username: ' + $scope.user + ' & matchid: ' + $scope.matchID);
 
 //BEGINNING OF SWITCHING OVER TO NICER STYLE
@@ -102,6 +101,17 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/matches/" + $scope.matchID);
 		return $firebase(ref).$asObject();
 	}
+
+// TODO users to be used for high score list
+// user object like this {name: username, wins: #}
+
+
+	$scope.users = getUsers();
+	function getUsers() {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/users/");
+		return $firebase(ref).$asObject();
+	}
+
 //END OF SWITCHING
 
 	var matchSync = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/matches/" + $scope.matchID));
@@ -138,7 +148,11 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		this.playerTwo = '';
 		this.needPlayerTwo = true;
 		this.playerOneTurn = true;
+		this.playerOneStarts = true;
 		this.gameOver = false;
+		this.winner = '';
+		this.playerOneWins = 0;
+		this.playerTwoWins = 0;
 
 	}
 
@@ -166,13 +180,21 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 
 
 	$scope.resetBoard = function() {
-		var p1 = $scope.game.playerOne;
-		var p2 = $scope.game.playerTwo;
-		matchSync.$set(new Game()).then(function(){
-			$scope.game.playerOne = p2;
-			$scope.game.playerTwo = p1;
-			$scope.game.needPlayerTwo = false;
-		});
+		// var p2 = $scope.game.playerTwo;
+		// var p1starts = !$scope.game.PlayerOneStarts;
+		// matchSync.$set(new Game()).then(function(){
+		// 	$scope.game.playerTwo = p2;
+		// 	$scope.game.needPlayerTwo = false;
+		// 	if(!p1starts) {
+		// 		$scope.game.playerOneTurn = false;
+		// 	}
+		// 	$scope.game.PlayerOneStarts = p1starts;
+		// });
+		$scope.game.board = createBoard($scope.game.boardSize);
+		$scope.game.playerOneTurn = !$scope.game.playerOneStarts;
+		$scope.game.playerOneStarts = !$scope.game.playerOneStarts;
+		$scope.game.gameOver = false;
+		$scope.game.winner = '';
 
 	};
 
@@ -197,6 +219,21 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		$scope.isGameOver();
 	};
 
+	function setWinner(token) {
+		//set winner property
+		if(token == 'X') {
+			$scope.game.winner = $scope.game.playerOne;
+			$scope.game.playerOneWins += 1;
+		}
+		else if(token == 'O') {
+			$scope.game.winner = $scope.game.playerTwo;
+			$scope.game.playerTwoWins += 1;
+		}
+		else if(token == 'XO') {
+			$scope.game.winner = 'tie';
+		}
+	}
+
 	$scope.isGameOver = function() {
 		var b = $scope.game.board;
 		var bs = $scope.game.boardSize;
@@ -208,8 +245,8 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 					break;
 				}
 				if(col == bs-1) {
+					setWinner(b[row][col]);
 					$scope.game.gameOver = true;
-					return b[row][col];
 				}
 			}
 		}
@@ -220,8 +257,8 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 					break;
 				}
 				if (row == bs-1) {
+					setWinner(b[row][col]);
 					$scope.game.gameOver = true;
-					return b[row][col];
 				}
 			}
 		}
@@ -231,8 +268,8 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 				break;
 			}
 			if(i == (bs-1)) {
+				setWinner(b[0][0]);
 				$scope.game.gameOver = true;
-				return b[0][0];
 			}
 		}
 		for(i = 0; i < bs; i++) {
@@ -240,8 +277,8 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 				break;
 			}
 			if(i == (bs-1)) {
+				setWinner(b[0][bs-1]);
 				$scope.game.gameOver = true;
-				return b[0][bs-1];
 			}
 		}
 		//if we've reached this point, there is no WIN, so check if gameboard is full
@@ -253,7 +290,7 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		}
 		//if we reach this point it's a tie
 		$scope.game.gameOver = true;
-		return 'XO';
+		setWinner('XO');
 	};
 
 	$scope.exit = function() {

@@ -8,61 +8,137 @@
     <script src="js/app.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
+      @import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
       body {
+        font-family: 'Press Start 2P', cursive;
+        background-color: #00565F;
         text-align: center;
-        background-repeat: no-repeat;
-        background-size: cover;
+        margin: 0;
       }
       table {
         margin: auto;
         margin-top: 20px;
+        background-color: black;
+        text-align: center;
+        border: 8px solid black;
+        display: inline-block;
       }
       td {
-        width: 100px;
-        height: 100px;
-        border: 1px solid black;
+        width: 105px;
+        height: 105px;
+        border: 2px solid black;
+      }
+      .board-button {
+        width: 105px;
+        height: 105px;
+        background-color: #CC4B09;
+/*        background-image: url('ques_mark_block.gif');
+        background-size: contain;*/
+        font-size: 72px;
+        font-family: 'Press Start 2P', cursive;
+        border: 4px solid black;
+        text-align: center;
+        padding 0;
+        outline: none;
+        padding-left: 15px;
+        padding-top: 8px;
+        user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        color: black;
+      }
+
+      table tr:first-child td,
+      table tr:first-child td button {
+        border-top: 0;
+      }
+      table tr:last-child td, 
+      table tr:last-child td button {
+        border-bottom: 0;
+      }
+      tr td:first-child,
+      tr td:first-child button {
+        border-left: 0;
+      }
+      tr td:last-child, 
+      tr td:last-child button {
+        border-right: 0;
+      }
+
+
+      .scoreboard{
+        height: 50px;
+        width: 100%;
+        font-size: 18px;
+        margin: auto;
       }
       .user {
         float: left;
-        border: 1px solid black;
+        border: 8px dashed black;
+        padding: 5px 5px;
+        background-color: #CC4B09;
+        margin-left: 2%;
       }
       .opponent {
         float: right;
-        border: 1px solid black;
+        border: 8px dashed black;
+        padding: 5px 5px;
+        background-color: #CC4B09;
+        margin-right: 2%;
       }
       .game-board-container {
-        clear: both;
-        display: inline-block;
-        position: relative;
+        display: block;
+        margin: auto;
       }
-      .board-button {
-        width: 100px;
-        height: 100px;
-        background-color: peachpuff;
-        font-size: 48px;
-        outline: none;
-        border: 1px solid black;
-      }
+
       .board-button:hover {
-        background-color: yellow;
-        opacity: .5;
+        background-color: #409D00;
+        opacity: 1;
       }
       .game-over-dialog {
         border: 1px solid black;
         border-radius: 5px;
         width: 300px;
-        height: 150px;
+        height: 200px;
         background: white;
         position: absolute;
-        top: 40%;
+        top: 50%;
         left: 50%;
-        margin-top: -75px;
+        margin-top: -100px;
         margin-left: -150px;
         z-index: 9999;
         /*box-shadow: 3px 3px;*/
       }
       .game-over-dialog p {
         margin-top: 20px;
+      }
+      .game-over-dialog button {
+        font-family: 'Press Start 2P', cursive;
+        font-size: 24px;
+        background-color: lightgray;
+      }
+      footer {
+        height: 100px;
+      }
+      header {
+        text-align: left;
+        font-size: 48px;
+        background-color: #409D00;
+        margin: 0;
+        padding: 5px 0 5px 0;
+        border-bottom: 8px solid black;
+        border-top: 8px solid black;
+      }
+      header a {
+        float: right;
+        font-size: 24px;
+      }
+      .p1 {
+        display: inline-block;
+        border
+      }
+      .highlight {
+        background-color: yellow;
       }
 
       
@@ -72,29 +148,42 @@
   </head>
   
   <body ng-controller="MainController">
-
-    {{ game }}<!--for debugging -->
-    <br>
-    <hr>
-    <br>
-    <div class="scoreboard">
-        <p class="user">{{user}} {{game.playerOne == user ? "P1" : "P2"}}<br> score</p>
-        <p class="opponent">{{game.playerOne == user ? "P2" : "P1"}} opponent<br> score</p>
-    </div>
+    <header>
+      <strong>TICTACTOE</strong>
+      <a href="index.html">HI-SCORE</a>
+    </header>
     
+    <div class="scoreboard">
+        <p class="user" ng-class="{highlight: game.playerOneTurn}">
+          {{game.playerOne}} P1
+          <br> 
+          {{game.playerOneWins}} win<span ng-hide="game.playerOneWins == 1">s</span>
+        </p>
+        <p class="opponent" ng-class="{highlight: !game.playerOneTurn}">
+          P2 {{game.playerTwo}}
+          <br>
+          {{game.playerTwoWins}} win<span ng-hide="game.playerTwoWins == 1">s</span>
+        </p>
+    </div>
     <div class="game-board-container">
       <!-- Game board -->
       <table ng-hide="game.needPlayerTwo">
         <tr ng-repeat="row in getBoardSizeArray()">
-          <td ng-repeat="column in getBoardSizeArray()">
-            <button class="board-button" ng-click="play(row, column)" ng-disabled="game.board[row][button]">{{game.board[row][column]}}</button>
+          <td ng-repeat="column in getBoardSizeArray()" class="board-button" ng-click="play(row, column)" ng-disabled="game.board[row][button]">
+            {{game.board[row][column]}}
           </td>
         </tr>
       </table>
       <!-- Game over dialog -->
       <div class="game-over-dialog" ng-show="game.gameOver">
         <p>
-          Game over.<br>  {{game.playerOneTurn ? game.playerTwo : game.playerOne }} wins! <br><br> Would you like to play again?
+          Game over.
+          <br>  
+          <span ng-show="game.winner == 'tie'">It's a tie!</span>
+          <span ng-show="game.winner != 'tie'">{{game.playerOneTurn ? game.playerTwo : game.playerOne }} wins!</span>
+          <br>
+          <br>
+          Would you like to play again?
         </p>
         <button ng-click="resetBoard()">Yes</button>
         <button ng-click="exit()">No</button>
@@ -102,6 +191,7 @@
       <!-- Message displayed instead of board while waiting for opponent -->
       <h2 ng-show="game.needPlayerTwo">Waiting for opponent...</h2>
     </div>
+    <footer>{{game}}</footer>
     
    
 
