@@ -15,11 +15,25 @@
       }
       table {
         margin: auto;
+        margin-top: 20px;
       }
       td {
         width: 100px;
         height: 100px;
         border: 1px solid black;
+      }
+      .user {
+        float: left;
+        border: 1px solid black;
+      }
+      .opponent {
+        float: right;
+        border: 1px solid black;
+      }
+      .game-board-container {
+        clear: both;
+        display: inline-block;
+        position: relative;
       }
       .board-button {
         width: 100px;
@@ -33,6 +47,26 @@
         background-color: yellow;
         opacity: .5;
       }
+      .game-over-dialog {
+        border: 1px solid black;
+        border-radius: 5px;
+        width: 300px;
+        height: 150px;
+        background: white;
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        margin-top: -75px;
+        margin-left: -150px;
+        z-index: 9999;
+        /*box-shadow: 3px 3px;*/
+      }
+      .game-over-dialog p {
+        margin-top: 20px;
+      }
+
+      
+
 
     </style>
   </head>
@@ -42,27 +76,34 @@
     {{ game }}<!--for debugging -->
     <br>
     <hr>
-    <p>{{game.playerOne == user ? "Player 1" : "Player 2"}}</p>
     <br>
+    <div class="scoreboard">
+        <p class="user">{{user}} {{game.playerOne == user ? "P1" : "P2"}}<br> score</p>
+        <p class="opponent">{{game.playerOne == user ? "P2" : "P1"}} opponent<br> score</p>
+    </div>
     
-
-    <!-- Game board -->
-    <table ng-hide="game.needPlayerTwo">
-      <tr ng-repeat="row in getBoardSizeArray(game.boardSize)">
-        <td ng-repeat="column in getBoardSizeArray(game.boardSize)">
-          <button class="board-button" ng-click="play(row, column)" ng-disabled="game.board[row][button]">{{game.board[row][column]}}</button>
-        </td>
-      </tr>
-    </table>
-
-    <!-- Message displayed instead of board while waiting for opponent -->
-    <h2 ng-show="game.needPlayerTwo">Waiting for opponent...</h2>
-
-    <!-- Game over message displayed beneath board when game ends -->
-    <div ng-show="game.gameOver">Game Over.  {{game.playerOneTurn ? game.playerTwo : game.playerOne }} wins!</div>
-
-    <button ng-show="game.playerOne == user" ng-click="resetBoard()">Reset</button>
-    <button ng-click="exit()">Exit</button>
+    <div class="game-board-container">
+      <!-- Game board -->
+      <table ng-hide="game.needPlayerTwo">
+        <tr ng-repeat="row in getBoardSizeArray()">
+          <td ng-repeat="column in getBoardSizeArray()">
+            <button class="board-button" ng-click="play(row, column)" ng-disabled="game.board[row][button]">{{game.board[row][column]}}</button>
+          </td>
+        </tr>
+      </table>
+      <!-- Game over dialog -->
+      <div class="game-over-dialog" ng-show="game.gameOver">
+        <p>
+          Game over.<br>  {{game.playerOneTurn ? game.playerTwo : game.playerOne }} wins! <br><br> Would you like to play again?
+        </p>
+        <button ng-click="resetBoard()">Yes</button>
+        <button ng-click="exit()">No</button>
+      </div>
+      <!-- Message displayed instead of board while waiting for opponent -->
+      <h2 ng-show="game.needPlayerTwo">Waiting for opponent...</h2>
+    </div>
+    
+   
 
   </body>
 </html>

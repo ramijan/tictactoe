@@ -91,6 +91,19 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 
 	console.log('username: ' + $scope.user + ' & matchid: ' + $scope.matchID);
 
+//BEGINNING OF SWITCHING OVER TO NICER STYLE
+	$scope.matches = getMatches();
+	function getMatches() {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/matches/");
+		return $firebase(ref).$asObject();
+	}
+
+	function getMatch() {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/matches/" + $scope.matchID);
+		return $firebase(ref).$asObject();
+	}
+//END OF SWITCHING
+
 	var matchSync = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/matches/" + $scope.matchID));
 	var matchObj = matchSync.$asObject();
 	matchObj.$bindTo($scope, 'game');
@@ -140,10 +153,12 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		return board;
 	}
 
+	//had to make this array to get around ng-repeat issue with $scope.
+	var boardArraySize = $scope.boardSize;
 	$scope.getBoardSizeArray = function() {
-
+			console.log('bS is ', boardArraySize);
 			var arr = [];
-			for(var i = 0; i < $scope.boardSize; i++) {
+			for(var i = 0; i < boardArraySize; i++) {
 				arr.push(i);
 			}
 			return arr;
@@ -185,11 +200,7 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 	$scope.isGameOver = function() {
 		var b = $scope.game.board;
 		var bs = $scope.game.boardSize;
-		
-
 		var row, col;
-
-		console.log("checking rows");
 		//check rows
 		for(row = 0; row < bs; row++) {
 			for(col = 1; col < bs; col++) {
@@ -200,11 +211,8 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 					$scope.game.gameOver = true;
 					return b[row][col];
 				}
-
 			}
 		}
-
-		console.log("checking columns");
 		//check columns
 		for(col = 0; col < bs; col++) {
 			for( row = 1; row < bs; row++) {
@@ -217,7 +225,6 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 				}
 			}
 		}
-		console.log("checking diag1");
 		//check diagonals
 		for(var i = 1; i < bs; i++) {
 			if(b[0][0] === '' || b[i][i] !== b[0][0]) {
@@ -228,7 +235,6 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 				return b[0][0];
 			}
 		}
-		console.log("checking diag2");
 		for(i = 0; i < bs; i++) {
 			if(b[0][bs-1] === '' || b[i][bs-1-i] !== b[0][bs-1]) {
 				break;
@@ -238,32 +244,38 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 				return b[0][bs-1];
 			}
 		}
-
-		console.log("checking for tie");
-		//check tie (and game not complete)
+		//if we've reached this point, there is no WIN, so check if gameboard is full
+		//and return if not
 		for(i = 0; i < bs; i++) {
 			for(j = 0; j < bs; j++) {
 				if(b[i][j] === '') return;
 			}
 		}
+		//if we reach this point it's a tie
 		$scope.game.gameOver = true;
 		return 'XO';
 	};
 
 	$scope.exit = function() {
+		console.log('in exit');
+		if($scope.game.playerTwo === '') {
+			console.log('only one player');
+			$scope.game.remove();
+		} 
+		else if($scope.game.playerOne == $scope.user) {
+			$scope.game.playerOne = $scope.game.playerTwo;
+			$scope.game.playerTwo = '';
+			$scope.game.needPlayerTwo = true;
+			console.log("player 1 left the game.");
+		}
+		else {
+			$scope.game.needPlayerTwo = true;
+			console.log('player 2 left the game');
+		}
 
-		// if($scope.game.playerOne == $scope.user){
-		// 	$scope.game.playerOne = '';
-		// }
-		// else if ($scope.game.playerTwo == $scope.user){
-		// 	$scope.game.playerTwo = '';
-		// }
+		//location.href="index.html";
 
-		// if(!$scope.game.playerOne && !$scope.game.playerTwo) {
-		// 	console.log('game should delete');
-		// 	matchObj.$remove();
-		// }
-		matchObj.$remove();
+
 	};
 
 
