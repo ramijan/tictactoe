@@ -1,11 +1,11 @@
 var app = angular.module('tictactoeApp', ['firebase']);
 
 
-/*
-*
-*		MenuController handles the menu page
-*
-*/
+/*********************************************************
+*  MenuController - controller for the menu page where
+*	   users can choose a username and then either join
+*    an existing game or create a new game
+**********************************************************/
 app.controller('MenuController', ['$scope', '$firebase', function($scope, $firebase) {
 
 	$scope.user = '';
@@ -17,6 +17,11 @@ app.controller('MenuController', ['$scope', '$firebase', function($scope, $fireb
 
 	$scope.newNameSelected = false;
 
+	$scope.users = getUsers();
+	function getUsers() {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/users/");
+		return $firebase(ref).$asObject();
+	}
 
 	$scope.randomName = function() {
 		var an = animals.toLowerCase().split(' ');
@@ -31,6 +36,13 @@ app.controller('MenuController', ['$scope', '$firebase', function($scope, $fireb
 		localStorage.user = $scope.chosenName;
 		$scope.user = localStorage.user;
 		$scope.newNameSelected = true;
+		if($scope.user in $scope.users) {
+			//do nothing
+		}
+		else {
+			$scope.users[$scope.user] = {name: $scope.user, w: 0, l: 0, d: 0};
+			$scope.users.$save();
+		}
 		console.log("User changed to: " + localStorage.user);
 	};
 
@@ -70,11 +82,17 @@ app.controller('MenuController', ['$scope', '$firebase', function($scope, $fireb
 
 
 
-/*
+
+
+
+
+
+/******************************************************************************
 *
 *		MainController handles the game page
 *
-*/
+******************************************************************************/
+
 
 app.controller('MainController', ['$scope', '$firebase', function($scope, $firebase) {
 
@@ -106,10 +124,16 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 // user object like this {name: username, wins: #}
 
 
+	$scope.userObj = getUser($scope.user);
+	function getUser(user) {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/users/" + user);
+		return $firebase(ref).$asObject();
+	}
+
 	$scope.users = getUsers();
 	function getUsers() {
 		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/users/");
-		return $firebase(ref).$asObject();
+		return $firebase(ref).$asArray();
 	}
 
 //END OF SWITCHING
@@ -170,7 +194,6 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 	//had to make this array to get around ng-repeat issue with $scope.
 	var boardArraySize = $scope.boardSize;
 	$scope.getBoardSizeArray = function() {
-			console.log('bS is ', boardArraySize);
 			var arr = [];
 			for(var i = 0; i < boardArraySize; i++) {
 				arr.push(i);
@@ -180,16 +203,7 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 
 
 	$scope.resetBoard = function() {
-		// var p2 = $scope.game.playerTwo;
-		// var p1starts = !$scope.game.PlayerOneStarts;
-		// matchSync.$set(new Game()).then(function(){
-		// 	$scope.game.playerTwo = p2;
-		// 	$scope.game.needPlayerTwo = false;
-		// 	if(!p1starts) {
-		// 		$scope.game.playerOneTurn = false;
-		// 	}
-		// 	$scope.game.PlayerOneStarts = p1starts;
-		// });
+
 		$scope.game.board = createBoard($scope.game.boardSize);
 		$scope.game.playerOneTurn = !$scope.game.playerOneStarts;
 		$scope.game.playerOneStarts = !$scope.game.playerOneStarts;
@@ -221,17 +235,32 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 
 	function setWinner(token) {
 		//set winner property
-		if(token == 'X') {
+		if(token == 'XO') {
+			$scope.game.winner = 'tie';
+			$scope.userObj.d += 1;
+		}
+		else if(token == 'X') {
 			$scope.game.winner = $scope.game.playerOne;
 			$scope.game.playerOneWins += 1;
+			if($scope.userObj.name == $scope.game.playerOne) {
+				$scope.userObj.w += 1;
+			}
+			else {
+				$scope.userObj.l += 1;
+			}
 		}
 		else if(token == 'O') {
 			$scope.game.winner = $scope.game.playerTwo;
 			$scope.game.playerTwoWins += 1;
+			if($scope.userObj.name == $scope.game.playerTwo) {
+				$scope.userObj.w += 1;
+			}
+			else {
+				$scope.userObj.l += 1;
+			}
 		}
-		else if(token == 'XO') {
-			$scope.game.winner = 'tie';
-		}
+		$scope.userObj.$save();
+
 	}
 
 	$scope.isGameOver = function() {
@@ -309,11 +338,44 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 			$scope.game.needPlayerTwo = true;
 			console.log('player 2 left the game');
 		}
-
 		//location.href="index.html";
 
 
 	};
+
+	/* CHATS SECTION *******************************************************************/
+
+	$scope.chats = getChats();
+	function getChats() {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/chats/" + $scope.matchID);
+		return $firebase(ref).$asArray();
+	}
+
+	$scope.showChat = false;
+	$scope.chatsRead = 0;
+	$scope.enterChat = '';
+
+	$scope.sendChat = function() {
+		if($scope.enterChat.length > 0) {
+			$scope.chats.$add({sender: $scope.user, message: $scope.enterChat});
+			$scope.enterChat = '';
+		}
+	};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

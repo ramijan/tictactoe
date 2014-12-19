@@ -6,153 +6,98 @@
     <script src="https://cdn.firebase.com/js/client/2.0.4/firebase.js"></script>
     <script src="https://cdn.firebase.com/libs/angularfire/0.9.0/angularfire.min.js"></script>
     <script src="js/app.js"></script>
+    <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
-      @import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
-      body {
-        font-family: 'Press Start 2P', cursive;
-        background-color: #00565F;
-        text-align: center;
-        margin: 0;
-      }
-      table {
-        margin: auto;
-        margin-top: 20px;
-        background-color: black;
-        text-align: center;
-        border: 8px solid black;
-        display: inline-block;
-      }
-      td {
-        width: 105px;
-        height: 105px;
-        border: 2px solid black;
-      }
-      .board-button {
-        width: 105px;
-        height: 105px;
-        background-color: #CC4B09;
-/*        background-image: url('ques_mark_block.gif');
-        background-size: contain;*/
-        font-size: 72px;
-        font-family: 'Press Start 2P', cursive;
-        border: 4px solid black;
-        text-align: center;
-        padding 0;
-        outline: none;
-        padding-left: 15px;
-        padding-top: 8px;
-        user-select: none;
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        color: black;
-      }
-
-      table tr:first-child td,
-      table tr:first-child td button {
-        border-top: 0;
-      }
-      table tr:last-child td, 
-      table tr:last-child td button {
-        border-bottom: 0;
-      }
-      tr td:first-child,
-      tr td:first-child button {
-        border-left: 0;
-      }
-      tr td:last-child, 
-      tr td:last-child button {
-        border-right: 0;
-      }
-
-
-      .scoreboard{
-        height: 50px;
-        width: 100%;
-        font-size: 18px;
-        margin: auto;
-      }
-      .user {
-        float: left;
-        border: 8px dashed black;
-        padding: 5px 5px;
-        background-color: #CC4B09;
-        margin-left: 2%;
-      }
-      .opponent {
-        float: right;
-        border: 8px dashed black;
-        padding: 5px 5px;
-        background-color: #CC4B09;
-        margin-right: 2%;
-      }
-      .game-board-container {
-        display: block;
-        margin: auto;
-      }
-
-      .board-button:hover {
-        background-color: #409D00;
-        opacity: 1;
-      }
-      .game-over-dialog {
-        border: 1px solid black;
-        border-radius: 5px;
-        width: 300px;
-        height: 200px;
-        background: white;
+      .hi-score {
         position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-top: -100px;
-        margin-left: -150px;
-        z-index: 9999;
-        /*box-shadow: 3px 3px;*/
+        width: 350px;
+        height: 100vh;
+        top: 0;
+        right: 0;
+        background-color: gray;
+        border: 8px solid black;
+
       }
-      .game-over-dialog p {
-        margin-top: 20px;
+      ul {
+        list-style-type: none;
+        padding-left: 10px;
       }
-      .game-over-dialog button {
-        font-family: 'Press Start 2P', cursive;
-        font-size: 24px;
-        background-color: lightgray;
-      }
-      footer {
-        height: 100px;
-      }
-      header {
+      .chat-box {
+        position: absolute;
+        width: 300px;
+        height:65vh;
+        bottom: 0;
+        left: 0;
+        background-color: white;
+        border: 4px solid black;
+        border-bottom: none;
+        box-sizing: border-box;
+        z-index: 1;
+        font-size: 12px;
         text-align: left;
-        font-size: 48px;
-        background-color: #409D00;
+      }
+      .chat-box button {
+        position: absolute;
+        bottom: 0;
+        left: 228px;
+        height: 40px;
+        outline: none;
+        border: 4px solid black;
+      }
+      .chat-box input {
+        font-family: 'Press Start 2P', cursive;;
+        position: absolute;
+        width: 222px;
+        height: 30px;
+        bottom: 0;
+        left: 0;
+        border: 4px solid black;
+      }
+      .chat-header{
+        background-color: blue;
+        width: 100%;
+        height: 30px;
+      }
+      .chat-header p {
         margin: 0;
-        padding: 5px 0 5px 0;
-        border-bottom: 8px solid black;
-        border-top: 8px solid black;
+        padding-top: 8px;
+        padding-left: 5px;
       }
-      header a {
-        float: right;
-        font-size: 24px;
-      }
-      .p1 {
-        display: inline-block;
-        border
-      }
-      .highlight {
-        background-color: yellow;
-      }
+      .hidden-chat {
+        position: absolute;
+        width: 250px;
+        height: 30px;
+        bottom: 0;
+        left: 0;
+        border-top: 4px solid black;
+        border-right: 4px solid black;
+        background-color: blue;
+        text-align: left;
+        padding-left: 5px;
 
-      
-
-
+      }
+      .hidden-chat p {
+        margin-top: 8px;
+      }
+      .unread-chat-count {
+        position: absolute;
+        right: 5px;
+        top: -3px;
+        background-color: red;
+        border-radius: 3px;
+        border: 1px solid black;
+        text-align: center;
+        padding: 3px;
+      }
     </style>
   </head>
   
   <body ng-controller="MainController">
     <header>
       <strong>TICTACTOE</strong>
-      <a href="index.html">HI-SCORE</a>
+      <a href="" ng-click="showHiScore = !showHiScore">HI-SCORE</a>
     </header>
-    
     <div class="scoreboard">
         <p class="user" ng-class="{highlight: game.playerOneTurn}">
           {{game.playerOne}} P1
@@ -191,8 +136,35 @@
       <!-- Message displayed instead of board while waiting for opponent -->
       <h2 ng-show="game.needPlayerTwo">Waiting for opponent...</h2>
     </div>
-    <footer>{{game}}</footer>
-    
+
+<!--     <footer>{{game}}</footer>
+ -->
+    <!-- High Score display -->
+    <div ng-show="showHiScore" class="hi-score">
+      <button style="position:absolute; top:0; right: 0; height: 35px; width: 35px; font-size: 24px; background-color: lightgray; outline:none" ng-click="showHiScore = !showHiScore">X</button>
+      <h3>Hi-Scores</h3>
+      <ul style="padding-left: 0">
+        <li style="list-style-type:none; text-align:left: padding-left: 10px; padding-bottom: 20px" ng-repeat="user in users | orderBy:user.w" ng-show="user.w > 0">
+          <span style="text-align: left; float: left">{{$index + 1}}.</span> {{user.name | uppercase}} -<br> {{user.w}} wins
+        </li>
+      </ul> 
+    </div>
+
+    <!-- Chat -->
+    <div ng-show="showChat" class="chat-box">
+      <div class="chat-header" ng-click="showChat = !showChat; chatsRead = chats.length"><p>Chat</p>
+      </div>
+      <ul>
+        <li ng-repeat="chat in chats">{{chat.sender | limitTo:5}}: {{chat.message}}</li>
+      </ul>
+      <form ng-submit="sendChat()">
+        <input type="text" ng-model="enterChat">
+        <button>Send</button>
+      </form>
+    </div>
+    <div class="hidden-chat" ng-click="showChat = !showChat; chatsRead = chats.length">
+      <p>Chat</p><p ng-hide="chats.length - chatsRead == 0"class="unread-chat-count">{{chats.length - chatsRead}}</p>
+    </div>
    
 
   </body>
