@@ -5,95 +5,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.0.4/firebase.js"></script>
     <script src="https://cdn.firebase.com/libs/angularfire/0.9.0/angularfire.min.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/GameController.js"></script>
     <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/style.css">
-    <style>
-      .hi-score {
-        position: absolute;
-        width: 350px;
-        height: 100vh;
-        top: 0;
-        right: 0;
-        background-color: gray;
-        border: 8px solid black;
-
-      }
-      ul {
-        list-style-type: none;
-        padding-left: 10px;
-      }
-      .chat-box {
-        position: absolute;
-        width: 300px;
-        height:65vh;
-        bottom: 0;
-        left: 0;
-        background-color: white;
-        border: 4px solid black;
-        border-bottom: none;
-        box-sizing: border-box;
-        z-index: 1;
-        font-size: 12px;
-        text-align: left;
-      }
-      .chat-box button {
-        position: absolute;
-        bottom: 0;
-        left: 228px;
-        height: 40px;
-        outline: none;
-        border: 4px solid black;
-      }
-      .chat-box input {
-        font-family: 'Press Start 2P', cursive;;
-        position: absolute;
-        width: 222px;
-        height: 30px;
-        bottom: 0;
-        left: 0;
-        border: 4px solid black;
-      }
-      .chat-header{
-        background-color: blue;
-        width: 100%;
-        height: 30px;
-      }
-      .chat-header p {
-        margin: 0;
-        padding-top: 8px;
-        padding-left: 5px;
-      }
-      .hidden-chat {
-        position: absolute;
-        width: 250px;
-        height: 30px;
-        bottom: 0;
-        left: 0;
-        border-top: 4px solid black;
-        border-right: 4px solid black;
-        background-color: blue;
-        text-align: left;
-        padding-left: 5px;
-
-      }
-      .hidden-chat p {
-        margin-top: 8px;
-      }
-      .unread-chat-count {
-        position: absolute;
-        right: 5px;
-        top: -3px;
-        background-color: red;
-        border-radius: 3px;
-        border: 1px solid black;
-        text-align: center;
-        padding: 3px;
-      }
-    </style>
   </head>
   
-  <body ng-controller="MainController">
+  <body ng-controller="GameController">
     <header>
       <strong>TICTACTOE</strong>
       <a href="" ng-click="showHiScore = !showHiScore">HI-SCORE</a>
@@ -137,35 +55,35 @@
       <h2 ng-show="game.needPlayerTwo">Waiting for opponent...</h2>
     </div>
 
-<!--     <footer>{{game}}</footer>
- -->
     <!-- High Score display -->
     <div ng-show="showHiScore" class="hi-score">
-      <button style="position:absolute; top:0; right: 0; height: 35px; width: 35px; font-size: 24px; background-color: lightgray; outline:none" ng-click="showHiScore = !showHiScore">X</button>
+      <button class="x-button" ng-click="showHiScore = !showHiScore">X</button>
       <h3>Hi-Scores</h3>
-      <ul style="padding-left: 0">
-        <li style="list-style-type:none; text-align:left: padding-left: 10px; padding-bottom: 20px" ng-repeat="user in users | orderBy:user.w" ng-show="user.w > 0">
-          <span style="text-align: left; float: left">{{$index + 1}}.</span> {{user.name | uppercase}} -<br> {{user.w}} wins
+      <ul>
+        <li ng-repeat="user in users | orderBy:user.w" ng-show="user.w > 0">
+          <span>{{$index + 1}}.</span> {{user.name | uppercase}} -<br> {{user.w}} wins
         </li>
       </ul> 
     </div>
 
     <!-- Chat -->
     <div ng-show="showChat" class="chat-box">
-      <div class="chat-header" ng-click="showChat = !showChat; chatsRead = chats.length"><p>Chat</p>
+      <div class="chat-header" ng-click="showChat = !showChat; chatsRead = chats.length">
+        <p>Chat</p>
       </div>
       <ul>
         <li ng-repeat="chat in chats">{{chat.sender | limitTo:5}}: {{chat.message}}</li>
       </ul>
       <form ng-submit="sendChat()">
         <input type="text" ng-model="enterChat">
-        <button>Send</button>
+        <button type="submit">Send</button>
       </form>
     </div>
     <div class="hidden-chat" ng-click="showChat = !showChat; chatsRead = chats.length">
-      <p>Chat</p><p ng-hide="chats.length - chatsRead == 0"class="unread-chat-count">{{chats.length - chatsRead}}</p>
+      <p>Chat</p>
+      <p ng-hide="chats.length - chatsRead == 0"class="unread-chat-count">{{chats.length - chatsRead}}</p>
     </div>
-   
+    {{game}}
 
   </body>
 </html>

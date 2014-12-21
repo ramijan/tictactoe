@@ -1,110 +1,22 @@
-var app = angular.module('tictactoeApp', ['firebase']);
-
-
-/*********************************************************
-*  MenuController - controller for the menu page where
-*	   users can choose a username and then either join
-*    an existing game or create a new game
-**********************************************************/
-app.controller('MenuController', ['$scope', '$firebase', function($scope, $firebase) {
-
-	$scope.user = '';
-	$scope.matchID = '';
-
-// USERNAME STUFF
-	$scope.isReturnUser = localStorage.user ? true : false;
-	if($scope.isReturnUser) $scope.user = localStorage.user;
-
-	$scope.newNameSelected = false;
-
-	$scope.users = getUsers();
-	function getUsers() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/users/");
-		return $firebase(ref).$asObject();
-	}
-
-	$scope.randomName = function() {
-		var an = animals.toLowerCase().split(' ');
-		var adj = adjectives.split(' ');
-		var adjective = adj[Math.floor(Math.random()*adj.length)];
-		var animal = an[Math.floor(Math.random()*an.length)];
-		var number = Math.floor(Math.random()*100);
-		return [adjective, animal, number].join('-');
-	};
-
-	$scope.setUsername = function() {
-		localStorage.user = $scope.chosenName;
-		$scope.user = localStorage.user;
-		$scope.newNameSelected = true;
-		if($scope.user in $scope.users) {
-			//do nothing
-		}
-		else {
-			$scope.users[$scope.user] = {name: $scope.user, w: 0, l: 0, d: 0};
-			$scope.users.$save();
-		}
-		console.log("User changed to: " + localStorage.user);
-	};
-
-//MATCHID STUFF
-  
-	/* Get all matches from firebase*/
-  $scope.matches = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/matches/")).$asArray();
-  
-  /* and then filter them to bring up only the 'open' games*/
-  $scope.openMatches = function(match) {
-  	if(match.needPlayerTwo && match.playerOne != $scope.user) {
-			return true;
-		}
-		return false;
-  };
-
-
-	$scope.setMatchIdAndBoard = function(id, boardSize) {
-		if(id=='new') {
-			localStorage.matchID = Math.floor(Math.random()*99999);
-		}
-		else {
-			localStorage.matchID = id;
-		}
-		localStorage.boardSize = boardSize;
-		joinGame();
-	};
-
-	function joinGame() {
-		if(!localStorage.user) localStorage.user = $scope.randomName();
-		location.href = 'game.html';
-
-	}
-
-// End of MenuController
-}]);
-
-
-
-
-
-
-
-
 /******************************************************************************
 *
-*		MainController handles the game page
+*		GameController handles the game page
 *
 ******************************************************************************/
+angular
+	.module('tictactoeApp')
+	.controller('GameController', ['$scope', '$firebase', function($scope, $firebase) {
 
-
-app.controller('MainController', ['$scope', '$firebase', function($scope, $firebase) {
-
-	/* Make sure all the localStorage info is present and send user back to menu if not */
-	if(!localStorage.matchID || !localStorage.matchID || !localStorage.user) {
+	 // Make sure all the localStorage info is present and send user back to menu if not 
+	if(!localStorage.matchID || !localStorage.boardSize || !localStorage.user) {
 		alert('something went wrong. going back to menu');
 		location.href="index.html";
 	}
-
+	// Save the localStorage data to the $scope
 	$scope.user = localStorage.user;
 	$scope.matchID = localStorage.matchID;
 	$scope.boardSize = localStorage.boardSize;
+
 
 	console.log('username: ' + $scope.user + ' & matchid: ' + $scope.matchID);
 
@@ -120,9 +32,6 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		return $firebase(ref).$asObject();
 	}
 
-// TODO users to be used for high score list
-// user object like this {name: username, wins: #}
-
 
 	$scope.userObj = getUser($scope.user);
 	function getUser(user) {
@@ -136,7 +45,6 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		return $firebase(ref).$asArray();
 	}
 
-//END OF SWITCHING
 
 	var matchSync = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/matches/" + $scope.matchID));
 	var matchObj = matchSync.$asObject();
@@ -147,7 +55,8 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		console.log('needPlayerTwo present: ' + ('needPlayerTwo' in matchObj));
 
 		if('needPlayerTwo' in matchObj && 'playerOne' in matchObj && $scope.game.playerOne != $scope.user) {
-			matchSync.$update({needPlayerTwo: false, playerTwo: $scope.user});
+			$scope.game.needPlayerTwo = false;
+			$scope.game.playerTwo = $scope.user;
 		}
 		else if(('playerOne' in matchObj) && $scope.game.playerOne == $scope.user) {
 			//do nothing, but skip the else clause
@@ -156,13 +65,6 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 			var newgame = new Game();
 			matchSync.$set(newgame);
 		}
-
-		//if game already existed and chosen board size doesn't match game,
-		// then change to size on existing game
-		if($scope.game.boardSize != $scope.boardSize) {
-			$scope.boardSize = $scope.game.boardSize;
-		}
-
 	});
 
 	function Game() {
@@ -191,7 +93,7 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 		return board;
 	}
 
-	//had to make this array to get around ng-repeat issue with $scope.
+	//had to make this variable to get around nested ng-repeat issue with $scope.
 	var boardArraySize = $scope.boardSize;
 	$scope.getBoardSizeArray = function() {
 			var arr = [];
@@ -363,21 +265,4 @@ app.controller('MainController', ['$scope', '$firebase', function($scope, $fireb
 	};
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }]);
-
