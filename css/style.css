@@ -2,10 +2,10 @@
 body {
   font-family: 'Press Start 2P', cursive;
   background-color: #00565F;
-/*  background-image: url('../mario1-1.png'); 
+  background-image: url('../mario_assets/mario1-1.png'); 
   background-size: cover;
   background-repeat: no-repeat;
-*/  text-align: center;
+  text-align: center;
   margin: 0;
 }
 table {
