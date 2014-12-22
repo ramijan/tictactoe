@@ -60,7 +60,7 @@
       <button class="x-button" ng-click="showHiScore = !showHiScore">X</button>
       <h3>Hi-Scores</h3>
       <ul>
-        <li ng-repeat="user in users | orderBy:user.w" ng-show="user.w > 0">
+        <li ng-repeat="user in users | filter:getWinners | orderBy:'-w'" >
           <span>{{$index + 1}}.</span> {{user.name | uppercase}} -<br> {{user.w}} wins
         </li>
       </ul> 

@@ -241,8 +241,10 @@ angular
 			console.log('player 2 left the game');
 		}
 		//location.href="index.html";
+	};
 
-
+	$scope.getWinners = function(user, index) {
+		return user.w > 0;
 	};
 
 	/* CHATS SECTION *******************************************************************/
