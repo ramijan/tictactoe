@@ -1,84 +1,36 @@
 <!DOCTYPE html>
-
-<html ng-app="tictactoeApp">
-  <head>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
-    <script src="https://cdn.firebase.com/js/client/2.0.4/firebase.js"></script>
+<html ng-app="tttApp">
+	<head>
+		<title></title>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.js"></script>
+	  <script src="https://cdn.firebase.com/js/client/2.0.4/firebase.js"></script>
     <script src="https://cdn.firebase.com/libs/angularfire/0.9.0/angularfire.min.js"></script>
-    <script src="js/wordlists.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/LobbyController.js"></script>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-
-      body {
-        text-align: center;
-        margin-left: 20%;
-        margin-right: 20%;
-        border: 5px solid red;
-        border-radius: 10px;
-
-      }
-      h1 {
-        background-color: red;
-      }
-      ul {
-        list-style: none;
-        padding-left: 0;
-      }
-
-    </style>
-  </head>
-
-
-  <body ng-controller="LobbyController">
-    
-    <header>
-      <h1>Tic Tac Toe</h1>
-    </header>
-    
-    <div class="username-picker">
-      
-      <div class="returning-user" ng-show="isReturnUser">
-        <h2>Welcome back, {{ user }}</h2>
-        <button ng-click="isReturnUser = false">Not you?</button>
-      </div>
-
-      <div class="new-user" ng-hide="isReturnUser || newNameSelected">
-        <p>Please pick a username:</p>
-        <input type="text" ng-model="chosenName">
-        <button ng-click="chosenName = randomName()">Random</button>
-        <button ng-click="setUsername()">Set</button>
-      </div>
-
-      <div class="username-selected" ng-show="newNameSelected">
-        <p> username: {{ user }} </p>
-        <!-- <button ng-click="newNameSelected=false">Change username</button> -->
-      </div>
-
-    </div>
-    
-    <div class="active-games">
-      <h1>List of open games</h1>
-      <ul>
-        <li ng-repeat="match in opengames=(matches | filter:openMatches)"><button ng-click="setMatchIdAndBoard(match.$id, match.boardSize)">{{match.$id}} {{match.playerOne}}: {{match.boardSize}}x{{match.boardSize}}</button></li>
-        <li ng-show="opengames.length == 0">No game available</li>
-      </ul>
-    </div>
-    
-    <div class="new-game">
-      <h1>Start a new game</h1>
-          
-      <p>Please select a board size:</p>
-      <select ng-model="boardSize">
-        <option value="3">3x3</option>
-        <option value="4">4x4</option>
-        <option value="5">5x5</option>
-      </select>
-      <button ng-click="setMatchIdAndBoard('new', boardSize)" ng-disabled="!boardSize">I'm ready!!</button>
-      <br>
-    </div>
-
-
-  </body>
+		<script src="js/main.js"></script>
+		<script src="js/LobbyController.js"></script>
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body ng-controller="LobbyController">
+		<div class="lobby-container">
+			<header>
+				<p class="left">mario<br>000000</p>
+				<p class="right">luigi<br>000000</p>
+				<p style="text-align:center" class="right">world<br>1-1</p>
+			</header>
+			<nav>
+				<ul ng-init="menu='main'">
+					<!-- main menu -->
+					<li ng-hide="menu != 'main'"><a href="" ng-click="menu='new'">new game</a></li>
+					<li ng-hide="menu != 'main'"><a href="" ng-click="menu='join'">Join game</a></li>
+					<!-- new game menu -->
+					<li ng-show="menu == 'new'"><a href="" ng-click="setMatchIdAndBoard('new', 3)">3x3</a></li>
+					<li ng-show="menu == 'new'"><a href="" ng-click="setMatchIdAndBoard('new', 4)">4x4</a></li>
+					<li ng-show="menu == 'new'"><a href="" ng-click="menu='main'">Back</a></li>
+					<!-- join game menu -->
+					<li ng-show="menu == 'join'" ng-repeat="match in opengames=(matches | filter:openMatches) | limitTo:3"><a href="" ng-click="setMatchIdAndBoard(match.$id, match.boardSize)">id:{{match.$id}} - {{match.boardSize}}x{{match.boardSize}}</a></li>
+					<li ng-show="menu == 'join' && opengames.length == 0">No game available</li>
+					<li ng-show="menu == 'join'"><a href="" ng-click="menu='main'">Back</a></li>
+				</ul>
+			</nav>
+		</div>
+	</body>
 </html>

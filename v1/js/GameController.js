@@ -1,15 +1,21 @@
+/******************************************************************************
+*
+*		GameController handles the game page
+*
+******************************************************************************/
 angular
-	.module('tttApp')
+	.module('tictactoeApp')
 	.controller('GameController', ['$scope', '$firebase', function($scope, $firebase) {
 
-	if(!localStorage.mariotttMatchID || !localStorage.mariotttSize || !localStorage.mariotttUser) {
+	 // Make sure all the localStorage info is present and send user back to menu if not 
+	if(!localStorage.matchID || !localStorage.boardSize || !localStorage.user) {
 		alert('something went wrong. going back to menu');
 		location.href="index.html";
 	}
 	// Save the localStorage data to the $scope
-	$scope.user = localStorage.mariotttUser;
-	$scope.matchID = localStorage.mariotttMatchID;
-	$scope.boardSize = localStorage.mariotttSize;
+	$scope.user = localStorage.user;
+	$scope.matchID = localStorage.matchID;
+	$scope.boardSize = localStorage.boardSize;
 
 
 	console.log('username: ' + $scope.user + ' & matchid: ' + $scope.matchID);
@@ -17,30 +23,30 @@ angular
 //BEGINNING OF SWITCHING OVER TO NICER STYLE
 	$scope.matches = getMatches();
 	function getMatches() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/");
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/matches/");
 		return $firebase(ref).$asObject();
 	}
 
 	function getMatch() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/" + $scope.matchID);
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/matches/" + $scope.matchID);
 		return $firebase(ref).$asObject();
 	}
 
 
 	$scope.userObj = getUser($scope.user);
 	function getUser(user) {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/users/" + user);
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/users/" + user);
 		return $firebase(ref).$asObject();
 	}
 
 	$scope.users = getUsers();
 	function getUsers() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/users/");
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/users/");
 		return $firebase(ref).$asArray();
 	}
 
 
-	var matchSync = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/" + $scope.matchID));
+	var matchSync = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/matches/" + $scope.matchID));
 	var matchObj = matchSync.$asObject();
 	matchObj.$bindTo($scope, 'game');
 
@@ -111,7 +117,6 @@ angular
 
 	$scope.play = function(row, column) {
 		var g = $scope.game;
-		console.log(g.board);
 
 		//block move if it's not player's turn
 		if(g.playerOne == $scope.user && !g.playerOneTurn) return;
@@ -134,19 +139,26 @@ angular
 		//set winner property
 		if(token == 'XO') {
 			$scope.game.winner = 'tie';
+			$scope.userObj.d += 1;
 		}
 		else if(token == 'X') {
 			$scope.game.winner = $scope.game.playerOne;
 			$scope.game.playerOneWins += 1;
-			if($scope.userObj.user == $scope.game.playerOne) {
-				$scope.userObj.wins += 1;
+			if($scope.userObj.name == $scope.game.playerOne) {
+				$scope.userObj.w += 1;
+			}
+			else {
+				$scope.userObj.l += 1;
 			}
 		}
 		else if(token == 'O') {
 			$scope.game.winner = $scope.game.playerTwo;
 			$scope.game.playerTwoWins += 1;
-			if($scope.userObj.user == $scope.game.playerTwo) {
-				$scope.userObj.wins += 1;
+			if($scope.userObj.name == $scope.game.playerTwo) {
+				$scope.userObj.w += 1;
+			}
+			else {
+				$scope.userObj.l += 1;
 			}
 		}
 		$scope.userObj.$save();
@@ -212,13 +224,34 @@ angular
 		setWinner('XO');
 	};
 
+	$scope.exit = function() {
+		console.log('in exit');
+		if($scope.game.playerTwo === '') {
+			console.log('only one player');
+			$scope.game.remove();
+		} 
+		else if($scope.game.playerOne == $scope.user) {
+			$scope.game.playerOne = $scope.game.playerTwo;
+			$scope.game.playerTwo = '';
+			$scope.game.needPlayerTwo = true;
+			console.log("player 1 left the game.");
+		}
+		else {
+			$scope.game.needPlayerTwo = true;
+			console.log('player 2 left the game');
+		}
+		//location.href="index.html";
+	};
 
+	$scope.getWinners = function(user, index) {
+		return user.w > 0;
+	};
 
-	// /* CHATS SECTION *******************************************************************/
+	/* CHATS SECTION *******************************************************************/
 
 	$scope.chats = getChats();
 	function getChats() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/chats/" + $scope.matchID);
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/chats/" + $scope.matchID);
 		return $firebase(ref).$asArray();
 	}
 
@@ -227,18 +260,11 @@ angular
 	$scope.enterChat = '';
 
 	$scope.sendChat = function() {
-		var sender = '';
-		if($scope.user == $scope.game.playerOne) sender = 'mario';
-		else sender = 'luigi';
-
-		if($scope.chats.length >= 10) {
-			$scope.chats.$remove(0);
-		}
-
 		if($scope.enterChat.length > 0) {
-			$scope.chats.$add({sender: sender, message: $scope.enterChat});
+			$scope.chats.$add({sender: $scope.user, message: $scope.enterChat});
 			$scope.enterChat = '';
 		}
 	};
+
 
 }]);

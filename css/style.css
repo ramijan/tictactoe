@@ -1,175 +1,211 @@
-@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+@font-face {
+  font-family: marioFont;
+  src: url('emulogic.ttf');
+}
+html {
+	background-color: black;
+}
 body {
-  font-family: 'Press Start 2P', cursive;
-  background-color: #00565F;
-  background-image: url('../mario_assets/mario1-1.png'); 
-  background-size: cover;
-  background-repeat: no-repeat;
-  text-align: center;
-  margin: 0;
-}
-table {
-  margin: auto;
-  margin-top: 20px;
-  background-color: black;
-  text-align: center;
-  display: inline-block;
-}
-td {
-  width: 105px;
-  height: 105px;
-  /*border: 8px solid black;*/
-  background-image: url('../question-mark-block.gif');
-  background-size: cover;
-  border: 4px solid black;
-}
-.board-button {
-  width: 105px;
-  height: 105px;
-  background-color: #CC4B09;
-/*        background-image: url('ques_mark_block.gif');
-  background-size: contain;*/
-  font-size: 72px;
-  font-family: 'Press Start 2P', cursive;
-/*  border: 10px solid black;
-*/  text-align: center;
-  padding 0;
-  outline: none;
-  padding-left: 15px;
-  padding-top: 8px;
-  -webkit-touch-callout: none;
+	margin: 0;
+	font-family: 'marioFont';
+	color: white;
+	font-size: 28px;
+	-webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  color: black;
-}
-h2 {
-  clear: both;
 }
 
-.scoreboard{
-  height: 50px;
-  width: 100%;
-  font-size: 18px;
-  margin: auto;
-}
-.user {
-  float: left;
-  border: 8px dashed black;
-  padding: 5px 5px;
-  background-color: #CC4B09;
-  margin-left: 2%;
-}
-.opponent {
-  float: right;
-  border: 8px dashed black;
-  padding: 5px 5px;
-  background-color: #CC4B09;
-  margin-right: 2%;
-}
-.game-board-container {
-  display: block;
-  margin: auto;
-}
+/* Header */
 
-.board-button:hover {
-  background-color: #409D00;
-  opacity: 1;
-  cursor: pointer;
-}
-.game-over-dialog {
-  border: 1px solid black;
-  border-radius: 5px;
-  width: 300px;
-  height: 200px;
-  background: white;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-top: -100px;
-  margin-left: -150px;
-  z-index: 9999;
-  /*box-shadow: 3px 3px;*/
-}
-.game-over-dialog p {
-  margin-top: 20px;
-}
-button,
-option {
-  font-family: 'Press Start 2P', cursive;
-}
-.game-over-dialog button {
-  font-size: 24px;
-  background-color: lightgray;
-}
-footer {
-  height: 100px;
-}
 header {
-  text-align: left;
-  font-size: 48px;
-  background-color: #409D00;
-  margin: 0;
-  padding: 5px 0 5px 0;
-  border-bottom: 8px solid black;
-  border-top: 8px solid black;
+	width: 100%;
+	display: inline-block;
+	z-index: 2;
 }
-header a {
-  float: right;
-  font-size: 24px;
+p.left {
+	position: relative;
+	float: left;
+	padding-left: 15px;
+	padding-top: 15px;
+	z-index: 2;
+	margin: 0;
 }
-.p1 {
-  display: inline-block;
-  border
+p.right {
+	position: relative;
+	text-align: right;
+	float: right;
+	padding-right: 15px;
+	padding-top: 15px;
+	z-index: 2;
+	margin: 0;
 }
-.highlight {
-  background-color: yellow;
+
+/* Lobby screen */
+
+.lobby-container {
+	background-image: url('../mario/title-screen-background.png');
+	background-color: white;
+	background-size: auto 100vh;
+	background-position: center;
+	background-repeat: no-repeat;
+	width: 775px;
+	height: 100vh;
+	background-color: black;
+	margin: auto;
 }
-.new-game {
-  padding-bottom: 20px;
+nav {
+	padding-top: 350px;
+	text-align: center;
+}
+ul {
+	list-style: none;
+	padding-left: 0;
+	display: inline-block;
+}
+li {
+	padding-bottom: 10px;
+}
+li:hover {
+	list-style-image: url('../mario/shroom-selector.png');
+}
+a {
+	text-decoration: none;
+	color: white;
 }
 
 
-.hi-score {
-  position: absolute;
-  width: 350px;
-  height: 100vh;
-  top: 0;
-  right: 0;
-  background-color: gray;
+/* Game screen */
+
+.game-container {
+	background-image: url('../mario/1-1-background.png');
+	background-color: white;
+	background-size: auto 100vh;
+	background-position: center;
+	background-repeat: no-repeat;
+	width: 775px;
+	height: 100vh;
+	background-color: black;
+	margin: auto;
+	position: relative;
+}
+table {
+	margin: auto;
+	clear: both;
+	position: relative;
+	bottom: 0;
+}
+td {
+	width: 100px;
+	height: 100px;
+	background-image: url('../mario/question-mark-block.gif');
+	background-size: cover;
+	}
+tr {
+	padding{10px 10px}
+}
+td.empty.turn:hover {
+	background-position:3px 3px;
+	cursor: pointer;
+}
+td.empty.notTurn:hover {
+	background-position: 0 0;
+	opacity: .8;
+}
+td.P1{
+	background-image: url('../mario/fireflower.gif');
+	background-size: 90px 90px;
+	background-position: center;
+	background-repeat: no-repeat;
+
+}
+td.P2{
+	background-image: url('../mario/star.gif');
+	background-size: 90px 90px;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.play-area {
+	clear: both;
+	display: block;
+	margin: auto;
+	padding-top: 5%;
+}
+
+
+/* Makes lines for titactoe board */
+table {
+  border-collapse: collapse;
+}
+table td {
   border: 8px solid black;
 }
-.hi-score ul {
-  padding-left: 0;
+table tr:first-child td {
+  border-top: 0;
 }
-.hi-score li {
-  list-style-type:none; 
-  text-align:left; 
-  padding-left: 10px; 
-  padding-bottom: 20px;
+table tr:last-child td {
+  border-bottom: 0;
 }
-.hi-score span {
-  text-align: left; 
-  float: left;
+table tr td:first-child {
+  border-left: 0;
 }
-.x-button {
-  position:absolute; 
-  top:0; 
-  right: 0; 
-  height: 35px; 
-  width: 35px; 
-  font-size: 24px; 
-  background-color: lightgray; 
-  outline:none
+table tr td:last-child {
+  border-right: 0;
 }
+
+.three {
+	bottom: -100px;
+}
+.waiting {
+	text-align: center;
+	font-size: 24px;
+	margin-top: 100px;
+}
+.game-over-screen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: black;
+	text-align: center;
+	z-index: 1;
+	-webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.game-over-screen ul {
+	margin: 10px;
+}
+.game-over-screen p {
+	margin: 0;
+}
+.game-over-screen p:first-child {
+	margin-top: 250px;
+}
+
+.thumb {
+	height: 30px;
+	width: 30px;
+	margin: 0 5px;
+}
+.highlight {
+	color: red;
+}
+
+/* chat */
 .chat-box ul {
   list-style-type: none;
   padding-left: 10px;
 }
+.chat-box ul li:hover {
+	list-style-image: none;
+}
 .chat-box {
   position: absolute;
-  width: 300px;
-  height:65vh;
+  width: 315px;
+  height:60vh;
   bottom: 0;
   left: 0;
   background-color: white;
@@ -179,6 +215,9 @@ header a {
   z-index: 1;
   font-size: 12px;
   text-align: left;
+  background-image: url('../mario/mario-pipe.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 .chat-box button {
   position: absolute;
@@ -187,15 +226,16 @@ header a {
   height: 40px;
   outline: none;
   border: 4px solid black;
+  font-family: marioFont;
 }
 .chat-box input {
-  font-family: 'Press Start 2P', cursive;;
   position: absolute;
   width: 222px;
   height: 30px;
   bottom: 0;
   left: 0;
   border: 4px solid black;
+  font-family: marioFont;
 }
 .chat-header{
   background-color: blue;
@@ -218,6 +258,7 @@ header a {
   background-color: blue;
   text-align: left;
   padding-left: 5px;
+  font-size: 16px;
 
 }
 .hidden-chat p {

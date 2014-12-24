@@ -1,0 +1,235 @@
+@import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+body {
+  font-family: 'Press Start 2P', cursive;
+  background-color: #00565F;
+  background-image: url('../mario_assets/mario1-1.png'); 
+  background-size: cover;
+  background-repeat: no-repeat;
+  text-align: center;
+  margin: 0;
+}
+table {
+  margin: auto;
+  margin-top: 20px;
+  background-color: black;
+  text-align: center;
+  display: inline-block;
+}
+td {
+  width: 105px;
+  height: 105px;
+  /*border: 8px solid black;*/
+  background-image: url('../question-mark-block.gif');
+  background-size: cover;
+  border: 4px solid black;
+}
+.board-button {
+  width: 105px;
+  height: 105px;
+  background-color: #CC4B09;
+/*        background-image: url('ques_mark_block.gif');
+  background-size: contain;*/
+  font-size: 72px;
+  font-family: 'Press Start 2P', cursive;
+/*  border: 10px solid black;
+*/  text-align: center;
+  padding 0;
+  outline: none;
+  padding-left: 15px;
+  padding-top: 8px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  color: black;
+}
+h2 {
+  clear: both;
+}
+
+.scoreboard{
+  height: 50px;
+  width: 100%;
+  font-size: 18px;
+  margin: auto;
+}
+.user {
+  float: left;
+  border: 8px dashed black;
+  padding: 5px 5px;
+  background-color: #CC4B09;
+  margin-left: 2%;
+}
+.opponent {
+  float: right;
+  border: 8px dashed black;
+  padding: 5px 5px;
+  background-color: #CC4B09;
+  margin-right: 2%;
+}
+.game-board-container {
+  display: block;
+  margin: auto;
+}
+
+.board-button:hover {
+  background-color: #409D00;
+  opacity: 1;
+  cursor: pointer;
+}
+.game-over-dialog {
+  border: 1px solid black;
+  border-radius: 5px;
+  width: 300px;
+  height: 200px;
+  background: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -100px;
+  margin-left: -150px;
+  z-index: 9999;
+  /*box-shadow: 3px 3px;*/
+}
+.game-over-dialog p {
+  margin-top: 20px;
+}
+button,
+option {
+  font-family: 'Press Start 2P', cursive;
+}
+.game-over-dialog button {
+  font-size: 24px;
+  background-color: lightgray;
+}
+footer {
+  height: 100px;
+}
+header {
+  text-align: left;
+  font-size: 48px;
+  background-color: #409D00;
+  margin: 0;
+  padding: 5px 0 5px 0;
+  border-bottom: 8px solid black;
+  border-top: 8px solid black;
+}
+header a {
+  float: right;
+  font-size: 24px;
+}
+.p1 {
+  display: inline-block;
+  border
+}
+.highlight {
+  background-color: yellow;
+}
+.new-game {
+  padding-bottom: 20px;
+}
+
+
+.hi-score {
+  position: absolute;
+  width: 350px;
+  height: 100vh;
+  top: 0;
+  right: 0;
+  background-color: gray;
+  border: 8px solid black;
+}
+.hi-score ul {
+  padding-left: 0;
+}
+.hi-score li {
+  list-style-type:none; 
+  text-align:left; 
+  padding-left: 10px; 
+  padding-bottom: 20px;
+}
+.hi-score span {
+  text-align: left; 
+  float: left;
+}
+.x-button {
+  position:absolute; 
+  top:0; 
+  right: 0; 
+  height: 35px; 
+  width: 35px; 
+  font-size: 24px; 
+  background-color: lightgray; 
+  outline:none
+}
+.chat-box ul {
+  list-style-type: none;
+  padding-left: 10px;
+}
+.chat-box {
+  position: absolute;
+  width: 300px;
+  height:65vh;
+  bottom: 0;
+  left: 0;
+  background-color: white;
+  border: 4px solid black;
+  border-bottom: none;
+  box-sizing: border-box;
+  z-index: 1;
+  font-size: 12px;
+  text-align: left;
+}
+.chat-box button {
+  position: absolute;
+  bottom: 0;
+  left: 228px;
+  height: 40px;
+  outline: none;
+  border: 4px solid black;
+}
+.chat-box input {
+  font-family: 'Press Start 2P', cursive;;
+  position: absolute;
+  width: 222px;
+  height: 30px;
+  bottom: 0;
+  left: 0;
+  border: 4px solid black;
+}
+.chat-header{
+  background-color: blue;
+  width: 100%;
+  height: 30px;
+}
+.chat-header p {
+  margin: 0;
+  padding-top: 8px;
+  padding-left: 5px;
+}
+.hidden-chat {
+  position: absolute;
+  width: 250px;
+  height: 30px;
+  bottom: 0;
+  left: 0;
+  border-top: 4px solid black;
+  border-right: 4px solid black;
+  background-color: blue;
+  text-align: left;
+  padding-left: 5px;
+
+}
+.hidden-chat p {
+  margin-top: 8px;
+}
+.unread-chat-count {
+  position: absolute;
+  right: 5px;
+  top: -3px;
+  background-color: red;
+  border-radius: 3px;
+  border: 1px solid black;
+  text-align: center;
+  padding: 3px;
+}
