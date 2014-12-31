@@ -27,18 +27,11 @@ angular
 	}
 
 
-	$scope.userObj = getUser($scope.user);
-	function getUser(user) {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/users/" + user);
+	$scope.stats = getStats();
+	function getStats() {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/stats/");
 		return $firebase(ref).$asObject();
 	}
-
-	$scope.users = getUsers();
-	function getUsers() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/users/");
-		return $firebase(ref).$asArray();
-	}
-
 
 	var matchSync = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/" + $scope.matchID));
 	var matchObj = matchSync.$asObject();
@@ -138,18 +131,14 @@ angular
 		else if(token == 'X') {
 			$scope.game.winner = $scope.game.playerOne;
 			$scope.game.playerOneWins += 1;
-			if($scope.userObj.user == $scope.game.playerOne) {
-				$scope.userObj.wins += 1;
-			}
+			$scope.stats.mario = ($scope.stats.mario ? $scope.stats.mario + 1: 1);
 		}
 		else if(token == 'O') {
 			$scope.game.winner = $scope.game.playerTwo;
 			$scope.game.playerTwoWins += 1;
-			if($scope.userObj.user == $scope.game.playerTwo) {
-				$scope.userObj.wins += 1;
-			}
+			$scope.stats.luigi = ($scope.stats.luigi ? $scope.stats.luigi + 1: 1);
 		}
-		$scope.userObj.$save();
+		$scope.stats.$save();
 
 	}
 

@@ -12,8 +12,8 @@
 	<body ng-controller="LobbyController">
 		<div class="lobby-container">
 			<header>
-				<p class="left">mario<br>000000</p>
-				<p class="right">luigi<br>000000</p>
+				<p class="left">mario<br>{{stats.mario | leadingZeroes}}</p>
+				<p class="right">luigi<br>{{stats.luigi | leadingZeroes}}</p>
 				<p style="text-align:center" class="right">world<br>1-1</p>
 			</header>
 			<nav>

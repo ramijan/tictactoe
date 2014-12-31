@@ -12,20 +12,12 @@ angular
 		localStorage.mariotttUser = $scope.user;
 	}
 
-	// Link up to firebase user list object
-	$scope.users = getUsers();
-	function getUsers() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/users/");
+	// global stats
+	$scope.stats = getStats();
+	function getStats() {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/stats/");
 		return $firebase(ref).$asObject();
 	}
-
-	// Add new users to firebase user object
-	$scope.users.$loaded().then(function(){
-		if(!($scope.user in $scope.users)) {
-			$scope.users[$scope.user] = {user: $scope.user, wins: 0};
-			$scope.users.$save();
-		}
-	});
 
 
 	/********************* MATCH SECTION *****************************************/
