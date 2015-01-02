@@ -26,7 +26,7 @@
 					<li ng-show="menu == 'new'"><a href="" ng-click="setMatchIdAndBoard('new', 4)">4x4</a></li>
 					<li ng-show="menu == 'new'"><a href="" ng-click="menu='main'">Back</a></li>
 					<!-- join game menu -->
-					<li ng-show="menu == 'join'" ng-repeat="match in opengames=(matches | filter:openMatches) | limitTo:3"><a href="" ng-click="setMatchIdAndBoard(match.$id, match.boardSize)">id:{{match.$id}} - {{match.boardSize}}x{{match.boardSize}}</a></li>
+					<li ng-show="menu == 'join'" ng-repeat="match in opengames=(matches | filter:openMatches) | limitTo:3"><a href="" ng-click="setMatchIdAndBoard(match.$id, match.boardSize)">world {{match.$id}} - {{match.boardSize}}x{{match.boardSize}}</a></li>
 					<li ng-show="menu == 'join' && opengames.length == 0">No game available</li>
 					<li ng-show="menu == 'join'"><a href="" ng-click="menu='main'">Back</a></li>
 				</ul>

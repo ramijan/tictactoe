@@ -46,7 +46,7 @@ p.right {
 .lobby-container {
 	background-image: url('../mario/title-screen-background.png');
 	background-color: white;
-	background-size: auto 100vh;
+	background-size: cover;
 	background-position: center;
 	background-repeat: no-repeat;
 	width: 775px;

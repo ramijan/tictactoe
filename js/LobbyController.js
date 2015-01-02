@@ -3,61 +3,50 @@ angular
 	.controller('LobbyController', ['$scope', '$firebase', function($scope, $firebase) {
 
 
+	// (String) user id used to track different players
+	$scope.user = getUserID();
+	// (Object) contains total Mario/Luigi wins across all players and games
+	$scope.stats = getStats();
+	// (Array) contains all matches that are saved on Firebase
+  $scope.matches = getMatches();
 
-	/********************* USERNAME SECTION **************************************/
-
-	$scope.user = localStorage.mariotttUser;
-	if(!$scope.user) {
-		$scope.user = "user-" + Math.floor(Math.random()*9999);
-		localStorage.mariotttUser = $scope.user;
+  // Gets existing user ID or generates a new one and then saves it to localStorage and returns it
+	function getUserID() {
+		localStorage.mariotttUser = (localStorage.mariotttUser || "user-" + Math.floor(Math.random()*9999));
+		return localStorage.mariotttUser;
 	}
 
-	// global stats
-	$scope.stats = getStats();
+	// Gets mario/luigi wins stats from Firebase and returns the object
 	function getStats() {
 		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/stats/");
 		return $firebase(ref).$asObject();
 	}
 
-
-	/********************* MATCH SECTION *****************************************/
-
-	// This variable will hold the match ID number (a number between 1 - 99999 used
-	// to uniquely identify each game)
-  $scope.matchID = '';
-
-	// Get Array of all Matches on Firebase
-  $scope.matches = getMatches();
+	// Gets all matches from Firebase and returns the array
   function getMatches() {
 		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/");
 		return $firebase(ref).$asArray();
 	}
 
-  // Function used as a filter for matches (used in ng-repeat in view)
-  // * Returns true if a match needs a second player
+  // Filter function for ng-repeat on index.html. Used to pull out only the open matches from the matches array
   $scope.openMatches = function(match) {
-  	if(match.needPlayerTwo && match.playerOne != $scope.user) {
-			return true;
-		}
-		return false;
+		return match.needPlayerTwo && match.playerOne != $scope.user;
   };
 
-  // Function called when user selects open game or clicks 'I'm ready button'
-  // * Saves matchID and boardSize (both passed in as arguments) to localStorage
-  // * and then joins the game (triggering a url change)
+  // Called when user picks a game to join or starts a new game
+  // Saves matchID and boardSize to localStorage and then joins the game (triggering a url change)
 	$scope.setMatchIdAndBoard = function(id, boardSize) {
-		if(id=='new') {
-			localStorage.mariotttMatchID = Math.floor(Math.random()*99999);
-		}
-		else {
-			localStorage.mariotttMatchID = id;
-		}
+		localStorage.mariotttMatchID = (id == 'new' ? randomHex(16) + '-' + randomHex(16) : id);
 		localStorage.mariotttSize = boardSize;
 		joinGame();
 	};
 
-	// Helper function that assigns a random username if none was chosen
-	// and then changes to game.html
+	// Helper function.  Returns a random hex number (string) in the range 0 <= number < n
+	function randomHex(n) {
+		return Math.floor(Math.random() * n).toString(16).toUpperCase();
+	}
+
+	// Helper function to launch game page.  Called in setMatchIdAndBoard function
 	function joinGame() {
 		location.href = 'game.html';
 	}
