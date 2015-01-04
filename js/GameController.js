@@ -2,58 +2,55 @@ angular
 	.module('tttApp')
 	.controller('GameController', ['$scope', '$firebase', function($scope, $firebase) {
 
-	if(!localStorage.mariotttMatchID || !localStorage.mariotttSize || !localStorage.mariotttUser) {
-		alert('something went wrong. going back to menu');
-		location.href="index.html";
-	}
-	// Save the localStorage data to the $scope
-	$scope.user = localStorage.mariotttUser;
-	$scope.matchID = localStorage.mariotttMatchID;
-	$scope.boardSize = localStorage.mariotttSize;
-
-
-	console.log('username: ' + $scope.user + ' & matchid: ' + $scope.matchID);
-
-//BEGINNING OF SWITCHING OVER TO NICER STYLE
-	$scope.matches = getMatches();
-	function getMatches() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/");
-		return $firebase(ref).$asObject();
-	}
-
-	function getMatch() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/" + $scope.matchID);
-		return $firebase(ref).$asObject();
-	}
-
-
+	$scope.user = getLocalData('mariotttUser');
+	$scope.matchID = getLocalData('mariotttMatchID');
+	$scope.boardSize = getLocalData('mariotttSize');
 	$scope.stats = getStats();
-	function getStats() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/stats/");
-		return $firebase(ref).$asObject();
-	}
-
-	var matchSync = $firebase(new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/" + $scope.matchID));
-	var matchObj = matchSync.$asObject();
-	matchObj.$bindTo($scope, 'game');
-
-	matchObj.$loaded().then(function() {
-		angular.forEach(matchObj, function(v, k){console.log(k, v);});
-		console.log('needPlayerTwo present: ' + ('needPlayerTwo' in matchObj));
-
+	var matchObj = getMatch($scope.matchID);
+	
+	// Bind matchObj to $scope.game variable (to create 3-way binding) and then run game intialization code
+	matchObj.$bindTo($scope, 'game').then(function() {
 		if('needPlayerTwo' in matchObj && 'playerOne' in matchObj && $scope.game.playerOne != $scope.user) {
 			$scope.game.needPlayerTwo = false;
 			$scope.game.playerTwo = $scope.user;
 		}
 		else if(('playerOne' in matchObj) && $scope.game.playerOne == $scope.user) {
-			//do nothing, but skip the else clause
+			// do nothing in this case
 		}
 		else {
 			var newgame = new Game();
-			matchSync.$set(newgame);
+			matchObj.$inst().$set(newgame);
+			//  Using the 3-way binding variable doesn't work.  Object shows up in firebase, but then the 
+			//if clause silently fails when player two joins the game
+			//$scope.game.$set(newgame);	
+			//$scope.game = newgame;
 		}
 	});
 
+	// Gets data from localStorage or triggers error alert and redirects to lobby if data is not present
+	function getLocalData(property) {
+		if(!localStorage[property]) {
+			alert('something went wrong. ' + property + ' not found.  Returning to Lobby');
+			location.href = "index.html";
+		} else {
+			return localStorage[property];
+		}
+	}
+
+	// Get stats object from Firebase (to track total mario/luigi wins)
+	function getStats() {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/stats/");
+		return $firebase(ref).$asObject();
+	}
+
+	// Get match object from firebase
+	function getMatch(matchID) {
+		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/" + matchID);
+		return $firebase(ref).$asObject();
+	}
+
+	// Constructor to create new game object.  Game is tracked by an array of arrays, and a bunch of other
+	// tracking and flag variables
 	function Game() {
 		this.boardSize = $scope.boardSize;
 		this.board = createBoard($scope.boardSize);
@@ -66,9 +63,9 @@ angular
 		this.winner = '';
 		this.playerOneWins = 0;
 		this.playerTwoWins = 0;
-
 	}
 
+	// Helper function for Game constructor.  Creates game array
 	function createBoard(size) {
 		var board = [];
 		for(var i = 0; i < size; i++) {
@@ -82,6 +79,7 @@ angular
 
 	//had to make this variable to get around nested ng-repeat issue with $scope.
 	var boardArraySize = $scope.boardSize;
+	// Creates array for use in <td> ng-repeat to create game board
 	$scope.getBoardSizeArray = function() {
 			var arr = [];
 			for(var i = 0; i < boardArraySize; i++) {
@@ -90,21 +88,18 @@ angular
 			return arr;
 	};
 
-
+	// Resets game - called when player clicks Yes at game over screen
 	$scope.resetBoard = function() {
-
 		$scope.game.board = createBoard($scope.game.boardSize);
 		$scope.game.playerOneTurn = !$scope.game.playerOneStarts;
 		$scope.game.playerOneStarts = !$scope.game.playerOneStarts;
 		$scope.game.gameOver = false;
 		$scope.game.winner = '';
-
 	};
 
-
+	// Plays appropriate game token and then triggers game over check - called whenever a player clicks on a square
 	$scope.play = function(row, column) {
 		var g = $scope.game;
-		console.log(g.board);
 
 		//block move if it's not player's turn
 		if(g.playerOne == $scope.user && !g.playerOneTurn) return;
@@ -120,9 +115,10 @@ angular
 		}
 
 		//check if latest move caused game over
-		$scope.isGameOver();
+		checkGameOver();
 	};
 
+	// Sets winner and updates stats when game ends
 	function setWinner(token) {
 		//set winner property
 		if(token == 'XO') {
@@ -139,10 +135,10 @@ angular
 			$scope.stats.luigi = ($scope.stats.luigi ? $scope.stats.luigi + 1: 1);
 		}
 		$scope.stats.$save();
-
 	}
 
-	$scope.isGameOver = function() {
+	// Checks all game over conditions and calls setWinner function if game is over
+	function checkGameOver() {
 		var b = $scope.game.board;
 		var bs = $scope.game.boardSize;
 		var row, col;
@@ -199,22 +195,22 @@ angular
 		//if we reach this point it's a tie
 		$scope.game.gameOver = true;
 		setWinner('XO');
-	};
+	}
 
-
-
-	// /* CHATS SECTION *******************************************************************/
+	 /* CHATS SECTION *******************************************************************/
 
 	$scope.chats = getChats();
+	$scope.showChat = false;
+	$scope.chatsRead = 0;
+	$scope.enterChat = '';
+
+	// Get chats array from firebase
 	function getChats() {
 		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/chats/" + $scope.matchID);
 		return $firebase(ref).$asArray();
 	}
 
-	$scope.showChat = false;
-	$scope.chatsRead = 0;
-	$scope.enterChat = '';
-
+	// Send chat.  Triggered by chat form submit
 	$scope.sendChat = function() {
 		var sender = '';
 		if($scope.user == $scope.game.playerOne) sender = 'mario';

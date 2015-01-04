@@ -23,7 +23,7 @@
 				</p>
 			</header>
 			<div class="play-area">
-				<table ng-hide="game.needPlayerTwo" ng-class="{three: game.boardSize==3, four: game.boardSize==4}">
+				<table ng-cloak ng-hide="game.needPlayerTwo" ng-class="{three: game.boardSize==3, four: game.boardSize==4}">
 					<tr ng-repeat="row in getBoardSizeArray()">
 						<td ng-repeat="col in getBoardSizeArray()" ng-click="play(row, col)" ng-class="{P1: game.board[row][col]=='X', P2: game.board[row][col]=='O', empty: game.board[row][col]==='', notTurn: (user==game.playerOne && !game.playerOneTurn) || (user==game.playerTwo && game.playerOneTurn), turn: (user==game.playerOne && game.playerOneTurn) || (user==game.playerTwo && !game.playerOneTurn)}"></td>
 					</tr>
