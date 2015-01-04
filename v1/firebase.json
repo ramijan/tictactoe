@@ -1,9 +1,0 @@
-{
-  "firebase": "rami-tictactoe",
-  "public": ".",
-  "ignore": [
-    "firebase.json",
-    "**/.*",
-    "**/node_modules/**"
-  ]
-}
