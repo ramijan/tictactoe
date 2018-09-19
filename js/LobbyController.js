@@ -18,13 +18,13 @@ angular
 
 	// Gets mario/luigi wins stats from Firebase and returns the object
 	function getStats() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/stats/");
+		var ref = new Firebase("https://rami-ttt.firebaseio.com/mariottt/stats/");
 		return $firebase(ref).$asObject();
 	}
 
 	// Gets all matches from Firebase and returns the array
   function getMatches() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/");
+		var ref = new Firebase("https://rami-ttt.firebaseio.com/mariottt/matches/");
 		return $firebase(ref).$asArray();
 	}
 

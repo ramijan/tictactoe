@@ -39,13 +39,13 @@ angular
 
 	// Get stats object from Firebase (to track total mario/luigi wins)
 	function getStats() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/stats/");
+		var ref = new Firebase("https://rami-ttt.firebaseio.com/mariottt/stats/");
 		return $firebase(ref).$asObject();
 	}
 
 	// Get match object from firebase
 	function getMatch(matchID) {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/matches/" + matchID);
+		var ref = new Firebase("https://rami-ttt.firebaseio.com/mariottt/matches/" + matchID);
 		return $firebase(ref).$asObject();
 	}
 
@@ -206,7 +206,7 @@ angular
 
 	// Get chats array from firebase
 	function getChats() {
-		var ref = new Firebase("https://rami-tictactoe.firebaseio.com/mariottt/chats/" + $scope.matchID);
+		var ref = new Firebase("https://rami-ttt.firebaseio.com/mariottt/chats/" + $scope.matchID);
 		return $firebase(ref).$asArray();
 	}
 
